@@ -11,8 +11,20 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () =>
-          import('@/features/auth/login-placeholder.component').then(
-            (m) => m.LoginPlaceholderComponent,
+          import('@/features/auth/login/login.component').then((m) => m.LoginComponent),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('@/features/auth/forgot-password/forgot-password.component').then(
+            (m) => m.ForgotPasswordComponent,
+          ),
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('@/features/auth/reset-password/reset-password.component').then(
+            (m) => m.ResetPasswordComponent,
           ),
       },
     ],
@@ -29,7 +41,16 @@ export const routes: Routes = [
             (m) => m.DashboardPlaceholderComponent,
           ),
       },
+      {
+        path: 'forbidden',
+        loadComponent: () =>
+          import('@/features/error/forbidden.component').then((m) => m.ForbiddenComponent),
+      },
     ],
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('@/features/error/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];
