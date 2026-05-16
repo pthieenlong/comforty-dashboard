@@ -12,3 +12,6 @@ export * from './divider/divider.component';
 export * from './nav-link/nav-link.component';
 export * from './tooltip/tooltip.directive';
 export * from './dropdown/dropdown.component';
+export * from './checkbox/checkbox.component';
+export * from './password-input/password-input.component';
+export * from './alert/alert.component';
