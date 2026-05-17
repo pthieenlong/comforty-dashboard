@@ -3,6 +3,7 @@ const eslint = require('@eslint/js');
 const { defineConfig } = require('eslint/config');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
+const storybook = require('eslint-plugin-storybook');
 
 module.exports = defineConfig([
   {
@@ -61,6 +62,16 @@ module.exports = defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+    },
+  },
+  {
+    files: ['**/*.stories.ts'],
+    extends: [storybook.configs['flat/recommended']],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@angular-eslint/component-selector': 'off',
+      '@angular-eslint/template/click-events-have-key-events': 'off',
+      '@angular-eslint/template/interactive-supports-focus': 'off',
     },
   },
 ]);
