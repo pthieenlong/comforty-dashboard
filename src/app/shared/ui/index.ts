@@ -39,3 +39,6 @@ export * from './price-input/price-input.component';
 export * from './multi-select/multi-select.component';
 export * from './tree/tree.component';
 export * from './tree/tree-select.component';
+export * from './stepper/stepper.component';
+export * from './file-upload/file-upload.component';
+export * from './file-upload/image-upload-grid.component';
