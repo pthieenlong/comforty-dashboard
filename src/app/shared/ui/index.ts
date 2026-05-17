@@ -32,3 +32,4 @@ export * from './data-table/data-table.component';
 export * from './data-table/data-table.types';
 export * from './page-header/page-header.component';
 export * from './placeholder-page/placeholder-page.component';
+export * from './description-list/description-list.component';

@@ -86,10 +86,7 @@ export const routes: Routes = [
       },
       {
         path: 'tenants',
-        loadComponent: () =>
-          import('@/features/dashboard/tenants-placeholder.component').then(
-            (m) => m.TenantsPlaceholderComponent,
-          ),
+        loadChildren: () => import('@/features/tenant/tenant.routes').then((m) => m.TENANT_ROUTES),
       },
       {
         path: 'forbidden',

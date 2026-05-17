@@ -15,23 +15,23 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 
 ## Tổng quan tiến độ
 
-| Sprint    | Phạm vi                                    | Trạng thái | Branch               |
-| --------- | ------------------------------------------ | ---------- | -------------------- |
-| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`     |
-| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`      |
-| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`      |
-| Sprint 3  | IAM (Users, Roles, Permissions)            | `[x]`      | merged to `dev`      |
-| Sprint 3+ | Storybook setup + stories cho 28 component | `[x]`      | merged to `dev`      |
-| Sprint 3+ | Layout polish (responsive + mock wiring)   | `[~]`      | `feat/layout-polish` |
-| Sprint 4  | Tenant management                          | `[ ]`      |                      |
-| Sprint 5  | Product catalog                            | `[ ]`      |                      |
-| Sprint 6  | Customer (CRM)                             | `[ ]`      |                      |
-| Sprint 7  | Inventory                                  | `[ ]`      |                      |
-| Sprint 8  | Orders + Payments                          | `[ ]`      |                      |
-| Sprint 9  | Marketing                                  | `[ ]`      |                      |
-| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                      |
-| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                      |
-| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                      |
+| Sprint    | Phạm vi                                    | Trạng thái | Branch                   |
+| --------- | ------------------------------------------ | ---------- | ------------------------ |
+| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`         |
+| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`          |
+| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`          |
+| Sprint 3  | IAM (Users, Roles, Permissions)            | `[x]`      | merged to `dev`          |
+| Sprint 3+ | Storybook setup + stories cho 28 component | `[x]`      | merged to `dev`          |
+| Sprint 3+ | Layout polish (responsive + mock wiring)   | `[x]`      | merged to `dev`          |
+| Sprint 4  | Tenant management                          | `[~]`      | `feat/tenant-management` |
+| Sprint 5  | Product catalog                            | `[ ]`      |                          |
+| Sprint 6  | Customer (CRM)                             | `[ ]`      |                          |
+| Sprint 7  | Inventory                                  | `[ ]`      |                          |
+| Sprint 8  | Orders + Payments                          | `[ ]`      |                          |
+| Sprint 9  | Marketing                                  | `[ ]`      |                          |
+| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                          |
+| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                          |
+| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                          |
 
 ---
 
@@ -99,7 +99,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [x] **Pagination** — page number + prev/next + range display
 - [x] **Tag/Chip** — label với close button
 - [ ] **Timeline** — order status, audit entry
-- [ ] **DescriptionList** — key-value chi tiết
+- [x] **DescriptionList** — key-value chi tiết
 - [~] **DataTable** — sort, filter, paginate, select, virtual scroll
   - [x] v1: column config + custom cell template + sort + selection + skeleton + empty state
   - [ ] v2: hoàn thiện virtual scroll cho list > 1000 row
@@ -237,16 +237,24 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: HQ admin xem/quản lý 6 tenant (1 HQ + 5 store).
 
+**Branch**: `feat/tenant-management`
+
 ### Components cần thêm (Sprint 4)
 
-- [ ] **DescriptionList** (cho detail tenant)
-- [ ] **Tabs** (cho detail tenant view)
+- [x] **DescriptionList** (cho detail tenant)
+- [x] **Tabs** (reuse từ Sprint 3)
+
+### Mock data + core
+
+- [x] Mở rộng `ITenant` (status, address, phone, email, managerName, openedAt, userCount, warehouseCount)
+- [x] `core/warehouse/` — `IWarehouse` types + mock 6 warehouse (1/tenant) + `findWarehousesByTenant` helper
+- [x] `findTenant` helper trong `tenant.mock.ts`
 
 ### Pages (Sprint 4)
 
-- [ ] `/tenants` — list tenant
-- [ ] `/tenants/:id` — detail (Info / Users / Warehouses tabs)
-- [ ] `/tenants/:id/edit` — form edit
+- [x] `/tenants` — grid card 6 tenant với filter (type, status) + search (name/code/city)
+- [x] `/tenants/:id` — detail với 3 tabs Info (DescriptionList) / Users (filter từ IAM mock) / Warehouses (card grid)
+- [x] `/tenants/:id/edit` — form edit (name, status, city, address, phone, email, managerName) — code & type readonly
 
 ---
 
@@ -391,3 +399,4 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 | 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                  |
 | 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                         |
 | 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util. |
+| 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                       |
