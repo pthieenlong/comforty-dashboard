@@ -5,16 +5,29 @@ export const PRODUCT_ROUTES: Routes = [
   {
     path: 'categories',
     loadComponent: () =>
-      import('./categories-placeholder.component').then((m) => m.CategoriesPlaceholderComponent),
+      import('./categories/categories-page.component').then((m) => m.CategoriesPageComponent),
   },
   {
     path: 'brands',
     loadComponent: () =>
-      import('./brands-placeholder.component').then((m) => m.BrandsPlaceholderComponent),
+      import('./brands/brands-list.component').then((m) => m.BrandsListComponent),
+  },
+  {
+    path: 'brands/new',
+    loadComponent: () => import('./brands/brand-form.component').then((m) => m.BrandFormComponent),
+  },
+  {
+    path: 'brands/:id/edit',
+    loadComponent: () => import('./brands/brand-form.component').then((m) => m.BrandFormComponent),
   },
   {
     path: 'products',
     loadComponent: () =>
-      import('./products-placeholder.component').then((m) => m.ProductsPlaceholderComponent),
+      import('./products/products-list.component').then((m) => m.ProductsListComponent),
+  },
+  {
+    path: 'products/:id',
+    loadComponent: () =>
+      import('./products/product-detail.component').then((m) => m.ProductDetailComponent),
   },
 ];
