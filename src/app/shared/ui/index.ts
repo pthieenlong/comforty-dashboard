@@ -30,3 +30,5 @@ export * from './toast/toast.service';
 export * from './select/select.component';
 export * from './data-table/data-table.component';
 export * from './data-table/data-table.types';
+export * from './page-header/page-header.component';
+export * from './placeholder-page/placeholder-page.component';
