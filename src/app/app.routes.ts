@@ -42,6 +42,10 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'iam',
+        loadChildren: () => import('@/features/iam/iam.routes').then((m) => m.IAM_ROUTES),
+      },
+      {
         path: 'forbidden',
         loadComponent: () =>
           import('@/features/error/forbidden.component').then((m) => m.ForbiddenComponent),

@@ -66,9 +66,21 @@ export const SIDEBAR_NAV: NavGroup[] = [
     items: [
       {
         label: 'Người dùng',
-        icon: LucideShieldCheck.icon,
+        icon: LucideUsers.icon,
         to: '/iam/users',
-        permission: 'iam:read',
+        permission: 'user:read',
+      },
+      {
+        label: 'Vai trò',
+        icon: LucideShieldCheck.icon,
+        to: '/iam/roles',
+        permission: 'role:read',
+      },
+      {
+        label: 'Quyền hạn',
+        icon: LucideUserCog.icon,
+        to: '/iam/permissions',
+        permission: 'role:read',
       },
       { label: 'Audit log', icon: LucideFileText.icon, to: '/audit', permission: 'audit:read' },
       { label: 'Báo cáo', icon: LucideBarChart3.icon, to: '/reports' },
