@@ -46,6 +46,52 @@ export const routes: Routes = [
         loadChildren: () => import('@/features/iam/iam.routes').then((m) => m.IAM_ROUTES),
       },
       {
+        path: 'orders',
+        loadChildren: () => import('@/features/order/order.routes').then((m) => m.ORDER_ROUTES),
+      },
+      {
+        path: 'customers',
+        loadChildren: () =>
+          import('@/features/customer/customer.routes').then((m) => m.CUSTOMER_ROUTES),
+      },
+      {
+        path: 'catalog',
+        loadChildren: () =>
+          import('@/features/product/product.routes').then((m) => m.PRODUCT_ROUTES),
+      },
+      {
+        path: 'inventory',
+        loadChildren: () =>
+          import('@/features/inventory/inventory.routes').then((m) => m.INVENTORY_ROUTES),
+      },
+      {
+        path: 'marketing',
+        loadChildren: () =>
+          import('@/features/marketing/marketing.routes').then((m) => m.MARKETING_ROUTES),
+      },
+      {
+        path: 'hr',
+        loadChildren: () => import('@/features/hr/hr.routes').then((m) => m.HR_ROUTES),
+      },
+      {
+        path: 'audit',
+        loadChildren: () => import('@/features/audit/audit.routes').then((m) => m.AUDIT_ROUTES),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('@/features/dashboard/reports-placeholder.component').then(
+            (m) => m.ReportsPlaceholderComponent,
+          ),
+      },
+      {
+        path: 'tenants',
+        loadComponent: () =>
+          import('@/features/dashboard/tenants-placeholder.component').then(
+            (m) => m.TenantsPlaceholderComponent,
+          ),
+      },
+      {
         path: 'forbidden',
         loadComponent: () =>
           import('@/features/error/forbidden.component').then((m) => m.ForbiddenComponent),
