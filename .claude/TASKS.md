@@ -15,22 +15,23 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 
 ## Tổng quan tiến độ
 
-| Sprint    | Phạm vi                                    | Trạng thái | Branch            |
-| --------- | ------------------------------------------ | ---------- | ----------------- |
-| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`  |
-| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`   |
-| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`   |
-| Sprint 3  | IAM (Users, Roles, Permissions)            | `[~]`      | `feat/iam`        |
-| Sprint 3+ | Storybook setup + stories cho 28 component | `[~]`      | `chore/storybook` |
-| Sprint 4  | Tenant management                          | `[ ]`      |                   |
-| Sprint 5  | Product catalog                            | `[ ]`      |                   |
-| Sprint 6  | Customer (CRM)                             | `[ ]`      |                   |
-| Sprint 7  | Inventory                                  | `[ ]`      |                   |
-| Sprint 8  | Orders + Payments                          | `[ ]`      |                   |
-| Sprint 9  | Marketing                                  | `[ ]`      |                   |
-| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                   |
-| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                   |
-| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                   |
+| Sprint    | Phạm vi                                    | Trạng thái | Branch               |
+| --------- | ------------------------------------------ | ---------- | -------------------- |
+| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`     |
+| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`      |
+| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`      |
+| Sprint 3  | IAM (Users, Roles, Permissions)            | `[x]`      | merged to `dev`      |
+| Sprint 3+ | Storybook setup + stories cho 28 component | `[x]`      | merged to `dev`      |
+| Sprint 3+ | Layout polish (responsive + mock wiring)   | `[~]`      | `feat/layout-polish` |
+| Sprint 4  | Tenant management                          | `[ ]`      |                      |
+| Sprint 5  | Product catalog                            | `[ ]`      |                      |
+| Sprint 6  | Customer (CRM)                             | `[ ]`      |                      |
+| Sprint 7  | Inventory                                  | `[ ]`      |                      |
+| Sprint 8  | Orders + Payments                          | `[ ]`      |                      |
+| Sprint 9  | Marketing                                  | `[ ]`      |                      |
+| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                      |
+| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                      |
+| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                      |
 
 ---
 
@@ -190,6 +191,48 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ---
 
+## Sprint 3+ — Layout Polish
+
+**Mục tiêu**: Hoàn thiện layout shell với mock data — topbar wiring, responsive sidebar, route loading, placeholder cho mọi feature module để click sidebar không 404.
+
+**Branch**: `feat/layout-polish`
+
+### Mock data + store (core)
+
+- [x] `core/tenant/` — types + mock 6 tenant + `TenantStore` (currentTenant, switchTenant với simulated delay)
+- [x] `core/auth/` — types + mock current user + `AuthStore` (currentUser, logout → redirect `/auth/login`)
+- [x] `core/notification/` — types + mock 8 noti + `NotificationStore` (items, unreadCount, markAsRead, markAllAsRead)
+- [x] `shared/utils/simulate-delay.ts` — promise resolve sau random delay
+
+### Components mới
+
+- [x] `shared/pipes/relative-time.pipe.ts` — format "X phút/giờ/ngày trước" vi-VN
+- [x] `shared/ui/page-header/` — breadcrumb + title + description + slot action
+- [x] `shared/ui/placeholder-page/` — wrap PageHeader + EmptyState cho route chưa build
+
+### Topbar wiring
+
+- [x] Tenant switcher bind với `TenantStore`, hiển thị tên + city, check icon cho item hiện tại, toast khi switch
+- [x] User menu bind với `AuthStore`, logout async với toast
+- [x] Notification dropdown (panel 360px) — list noti với icon theo type, unread dot, relative time, click → mark as read + navigate
+- [x] Hamburger button (left) — chỉ hiển thị trên mobile (`<lg`)
+
+### Responsive sidebar
+
+- [x] Desktop (`≥lg`): in-flow, collapse w-64 ↔ w-16
+- [x] Mobile (`<lg`): fixed overlay slide từ trái + backdrop, đóng khi click nav item
+
+### Routing
+
+- [x] Wire route + placeholder page cho: `/orders`, `/customers`, `/catalog/*`, `/inventory/*`, `/marketing/*`, `/hr/*`, `/audit`, `/reports`, `/tenants`
+- [x] Lazy load qua `*.routes.ts` per module — match pattern IAM
+
+### UX polish
+
+- [x] Route navigation loading bar (thanh 0.5px indigo, animate-pulse trên top main) — listen `NavigationStart/End/Cancel/Error`
+
+---
+
 ## Sprint 4 — Tenant Management
 
 **Mục tiêu**: HQ admin xem/quản lý 6 tenant (1 HQ + 5 store).
@@ -340,10 +383,11 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Cập nhật log
 
-| Date       | Sprint    | Note                                                                                                                                                                                                                                                                    |
-| ---------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                               |
-| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                              |
-| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                          |
-| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions. |
-| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                        |
+| Date       | Sprint    | Note                                                                                                                                                                                                                                                                                     |
+| ---------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                                                |
+| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                                               |
+| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                                           |
+| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                  |
+| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                         |
+| 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util. |
