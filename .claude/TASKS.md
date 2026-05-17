@@ -15,21 +15,22 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 
 ## Tổng quan tiến độ
 
-| Sprint    | Phạm vi                                | Trạng thái | Branch                      |
-| --------- | -------------------------------------- | ---------- | --------------------------- |
-| Sprint 0  | Repo setup + docs + tooling            | `[x]`      | merged to `main`            |
-| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts  | `[x]`      | `feat/layout-and-ui-system` |
-| Sprint 2  | HTTP foundation + Auth flow + Login    | `[ ]`      | (chưa tạo)                  |
-| Sprint 3  | IAM (Users, Roles, Permissions)        | `[ ]`      |                             |
-| Sprint 4  | Tenant management                      | `[ ]`      |                             |
-| Sprint 5  | Product catalog                        | `[ ]`      |                             |
-| Sprint 6  | Customer (CRM)                         | `[ ]`      |                             |
-| Sprint 7  | Inventory                              | `[ ]`      |                             |
-| Sprint 8  | Orders + Payments                      | `[ ]`      |                             |
-| Sprint 9  | Marketing                              | `[ ]`      |                             |
-| Sprint 10 | HR (Attendance, Incidents)             | `[ ]`      |                             |
-| Sprint 11 | Audit log + Notifications              | `[ ]`      |                             |
-| Sprint 12 | Polish (404/403, error boundary, i18n) | `[ ]`      |                             |
+| Sprint    | Phạm vi                                    | Trạng thái | Branch            |
+| --------- | ------------------------------------------ | ---------- | ----------------- |
+| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`  |
+| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`   |
+| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`   |
+| Sprint 3  | IAM (Users, Roles, Permissions)            | `[~]`      | `feat/iam`        |
+| Sprint 3+ | Storybook setup + stories cho 28 component | `[~]`      | `chore/storybook` |
+| Sprint 4  | Tenant management                          | `[ ]`      |                   |
+| Sprint 5  | Product catalog                            | `[ ]`      |                   |
+| Sprint 6  | Customer (CRM)                             | `[ ]`      |                   |
+| Sprint 7  | Inventory                                  | `[ ]`      |                   |
+| Sprint 8  | Orders + Payments                          | `[ ]`      |                   |
+| Sprint 9  | Marketing                                  | `[ ]`      |                   |
+| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                   |
+| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                   |
+| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                   |
 
 ---
 
@@ -64,15 +65,15 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ### Form components
 
-- [ ] **Checkbox** — single checkbox với indeterminate state
+- [x] **Checkbox** — single checkbox với indeterminate state
 - [ ] **CheckboxGroup** — group nhiều checkbox cho multi-filter
 - [ ] **Radio** + **RadioGroup**
-- [ ] **Switch** — toggle on/off
+- [x] **Switch** — toggle on/off
 - [ ] **Textarea** — multi-line input
-- [ ] **PasswordInput** — variant Input với toggle show/hide
-- [ ] **SearchInput** — variant Input với icon search + clear
+- [x] **PasswordInput** — variant Input với toggle show/hide
+- [x] **SearchInput** — variant Input với icon search + clear
 - [ ] **NumberInput** — +/- buttons, min/max, formatter (VNĐ)
-- [ ] **Select** — single select dropdown, có search
+- [x] **Select** — single select dropdown, có search
 - [ ] **MultiSelect** — multiple select với chip
 - [ ] **Combobox/Autocomplete** — tìm theo SKU/phone/email
 - [ ] **DatePicker** — chọn ngày, calendar grid vi-VN
@@ -82,27 +83,25 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ### Feedback & Disclosure
 
-- [ ] **Modal/Dialog** — CDK Overlay + FocusTrap
-- [ ] **ConfirmDialog** — wrapper Modal cho yes/no action
+- [x] **Modal/Dialog** — CDK Dialog + dismissible header + footer slot
+- [x] **ConfirmDialog** — wrapper Modal cho yes/no action với service
 - [ ] **Drawer** — slide panel từ phải
-- [ ] **Alert** — inline message (success/warning/error/info)
-- [ ] **EmptyState** — khi list rỗng
-- [ ] **Skeleton** — loading placeholder
-- [ ] **Toast wrapper** — preset cho `ngx-sonner`
+- [x] **Alert** — inline message (success/warning/error/info)
+- [x] **EmptyState** — khi list rỗng
+- [x] **Skeleton** — loading placeholder
+- [x] **Toast wrapper** — service preset cho `ngx-sonner`
 
 ### Navigation & Data Display
 
-- [ ] **Breadcrumb** — path navigation
-- [ ] **Tabs** — tab switcher với signal state
-- [ ] **Pagination** — page number + prev/next
-- [ ] **Tag/Chip** — label với close button
+- [x] **Breadcrumb** — path navigation
+- [x] **Tabs** — tab switcher với signal state, TabPanel directive
+- [x] **Pagination** — page number + prev/next + range display
+- [x] **Tag/Chip** — label với close button
 - [ ] **Timeline** — order status, audit entry
 - [ ] **DescriptionList** — key-value chi tiết
-- [ ] **DataTable** — sort, filter, paginate, select, virtual scroll
-  - [ ] v1: basic table với column config
-  - [ ] v2: sort + pagination
-  - [ ] v3: row selection + bulk action
-  - [ ] v4: virtual scroll cho list > 1000 row
+- [~] **DataTable** — sort, filter, paginate, select, virtual scroll
+  - [x] v1: column config + custom cell template + sort + selection + skeleton + empty state
+  - [ ] v2: hoàn thiện virtual scroll cho list > 1000 row
 - [ ] **Stepper** — wrap CDK Stepper
 - [ ] **Tree** — wrap CDK Tree (cho Category)
 - [ ] **TreeSelect** — chọn từ tree
@@ -118,43 +117,35 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ---
 
-## Sprint 2 — HTTP Foundation + Auth + Login
+## Sprint 2 — Auth UI Pages
 
-**Mục tiêu**: User có thể login thật (giả định API ready) → access dashboard với tenant context.
+**Mục tiêu**: Hoàn thiện UI cho luồng auth + 404/403 — **không** wire backend, service, interceptor, guard (defer sang sprint sau khi API ready).
 
-**Branch dự kiến**: `feat/auth-and-http`
+**Branch**: `feat/auth-and-http`
 
-### Foundation
+### Components cần thêm (Sprint 2)
 
-- [ ] Define `IApiResponse<T>` + `IApiError` model trong `src/app/shared/models/`
+- [x] **PasswordInput** — toggle show/hide
+- [x] **Checkbox** — single với indeterminate state, ControlValueAccessor
+- [x] **Alert** — 4 variants (success/warning/danger/info), dismissible
+
+### Pages (Sprint 2)
+
+- [x] **Login page** — Reactive form email + password + remember, validate error, loading state, link sang Forgot
+- [x] **Forgot password page** — form email, success state sau khi gửi
+- [x] **Reset password page** — form mật khẩu mới + confirm với cross-field validator
+- [x] **404 page** — wildcard route catch-all
+- [x] **403 page** (Forbidden) — `/forbidden` route với nút back
+
+### Defer sang sprint sau (cần backend ready)
+
+- [ ] Define `IApiResponse<T>` + `IApiError` model
 - [ ] Define `IJwtPayload`, `IUser`, `ITenant`, `IPermission` model
-- [ ] `AuthService` (SignalStore) — login, logout, refresh token, current user
-- [ ] `TenantService` (SignalStore) — current tenant, switch tenant, list available
-- [ ] `PermissionService` — check `has(permission)`, compute từ user roles
-- [ ] HTTP Interceptor: `authInterceptor` — attach `Authorization: Bearer <token>`
-- [ ] HTTP Interceptor: `tenantInterceptor` — attach `x-tenant-id`
-- [ ] HTTP Interceptor: `apiResponseInterceptor` — unwrap `data` từ `ApiResponse<T>`
-- [ ] HTTP Interceptor: `errorInterceptor` — chuẩn hóa error, 401 → refresh flow, 403 → toast deny
-- [ ] `authGuard` — kiểm tra access token còn hiệu lực
-- [ ] `tenantGuard` — đảm bảo có tenant context
-- [ ] `permissionGuard` — check route data `permission`
-
-### Components cần thêm cho Sprint này
-
-- [ ] **PasswordInput** (cho login form)
-- [ ] **Checkbox** (cho "Ghi nhớ đăng nhập")
-- [ ] **Alert** (cho error message khi login fail)
-
-### Pages
-
-- [ ] **Login page** — form email + password + remember, error handling, loading state
-- [ ] **Forgot password page** — UI only (chưa nối backend nếu BE chưa có)
-- [ ] **Reset password page** — UI only
-- [ ] **404 page**
-- [ ] **403 page** (Forbidden)
-
-### Hookup
-
+- [ ] `AuthService` (SignalStore) — login, logout, refresh, currentUser
+- [ ] `TenantService` (SignalStore) — current tenant, switch, list available
+- [ ] `PermissionService` — check `has(permission)`
+- [ ] HTTP Interceptor: auth, tenant, apiResponse, error
+- [ ] Guards: `authGuard`, `tenantGuard`, `permissionGuard`
 - [ ] Nối tenant switcher trong Topbar với `TenantService`
 - [ ] Nối user menu trong Topbar với `AuthService.currentUser`
 - [ ] Wire logout action
@@ -167,29 +158,35 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Branch dự kiến**: `feat/iam`
 
-### Components cần thêm
+### Components cần thêm (Sprint 3)
 
-- [ ] **DataTable v1** (cho User list)
-- [ ] **Pagination**
-- [ ] **SearchInput**
-- [ ] **Modal/Dialog** + **ConfirmDialog**
-- [ ] **Select** (cho assign role)
-- [ ] **Switch** (active/inactive user)
-- [ ] **Tag/Chip** (hiển thị roles của user)
-- [ ] **EmptyState**
-- [ ] **Skeleton**
-- [ ] **Toast wrapper**
-- [ ] **Breadcrumb**
+- [x] **DataTable v1**
+- [x] **Pagination**
+- [x] **SearchInput**
+- [x] **Modal/Dialog** + **ConfirmDialog**
+- [x] **Select**
+- [x] **Switch**
+- [x] **Tag**
+- [x] **EmptyState**
+- [x] **Skeleton**
+- [x] **Toast wrapper**
+- [x] **Breadcrumb**
+- [x] **Tabs** (bonus, dùng cho user detail)
 
-### Pages
+### Pages (Sprint 3)
 
-- [ ] `/iam/users` — list user với filter + search + pagination
-- [ ] `/iam/users/new` — form tạo user
-- [ ] `/iam/users/:id` — detail user (Info / Tenants & Roles / Activity tabs)
-- [ ] `/iam/users/:id/edit` — form edit
-- [ ] `/iam/roles` — list role
-- [ ] `/iam/roles/:id` — detail role với permission grid
-- [ ] `/iam/permissions` — list permission (read-only)
+- [x] `/iam/users` — list user với filter (status, tenant) + search + sort + pagination + bulk select
+- [x] `/iam/users/new` — form tạo user (email, name, phone, tenant, role, active)
+- [x] `/iam/users/:id` — detail user với tabs (Info / Chi nhánh & Vai trò / Hoạt động)
+- [x] `/iam/users/:id/edit` — form edit (dùng chung component với create, prefill data từ mock)
+- [x] `/iam/roles` — list role grid với card per role
+- [x] `/iam/roles/:id` — detail role với permission matrix 10 resources × 4 actions
+- [x] `/iam/permissions` — list permission read-only nhóm theo resource
+
+### Mock data
+
+- [x] `iam.types.ts` — IUser, IRole, IPermission, IUserTenantAssignment
+- [x] `iam.mock.ts` — 28 users, 9 roles, 40 permissions (10 resources × 4 actions), 6 tenants
 
 ---
 
@@ -197,12 +194,12 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: HQ admin xem/quản lý 6 tenant (1 HQ + 5 store).
 
-### Components cần thêm
+### Components cần thêm (Sprint 4)
 
 - [ ] **DescriptionList** (cho detail tenant)
 - [ ] **Tabs** (cho detail tenant view)
 
-### Pages
+### Pages (Sprint 4)
 
 - [ ] `/tenants` — list tenant
 - [ ] `/tenants/:id` — detail (Info / Users / Warehouses tabs)
@@ -214,7 +211,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: HQ quản lý Category/Brand/Product, store xem.
 
-### Components cần thêm
+### Components cần thêm (Sprint 5)
 
 - [ ] **Tree** (cho Category 3 cấp)
 - [ ] **TreeSelect** (chọn parent category)
@@ -224,7 +221,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [ ] **MultiSelect** (cho variant attributes)
 - [ ] **DataTable v2** (sort + pagination)
 
-### Pages
+### Pages (Sprint 5)
 
 - [ ] `/catalog/categories` — tree view + add/edit
 - [ ] `/catalog/brands` — list + form
@@ -239,11 +236,11 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: Xem khách hàng global, lịch sử mua, loyalty.
 
-### Components cần thêm
+### Components cần thêm (Sprint 6)
 
 - [ ] **Timeline** (order history)
 
-### Pages
+### Pages (Sprint 6)
 
 - [ ] `/customers` — list với filter (tier, has_orders, date range)
 - [ ] `/customers/:id` — detail (Info / Addresses / Orders / Loyalty tabs)
@@ -254,13 +251,13 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: Xem stock, tạo movement, transfer giữa warehouse, kiểm kê.
 
-### Components cần thêm
+### Components cần thêm (Sprint 7)
 
 - [ ] **Stepper** (cho StockTransfer flow)
 - [ ] **Drawer** (cho filter advanced)
 - [ ] **DataTable v3** (row selection cho bulk action)
 
-### Pages
+### Pages (Sprint 7)
 
 - [ ] `/inventory/stock` — xem tồn theo warehouse
 - [ ] `/inventory/movements` — log mọi biến động
@@ -276,13 +273,13 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: Quản lý đơn (POS + online), refund, view payment.
 
-### Components cần thêm
+### Components cần thêm (Sprint 8)
 
 - [ ] **DateRangePicker**
 - [ ] **DataTable v4** (virtual scroll cho list dài)
 - [ ] **Combobox** (tìm Customer/Product nhanh)
 
-### Pages
+### Pages (Sprint 8)
 
 - [ ] `/orders` — list với filter (channel, status, date range, store)
 - [ ] `/orders/:id` — detail + status timeline + action (confirm/cancel/refund)
@@ -294,11 +291,11 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Sprint 9 — Marketing
 
-### Components cần thêm
+### Components cần thêm (Sprint 9)
 
 - [ ] **DatePicker** (valid_from/valid_until)
 
-### Pages
+### Pages (Sprint 9)
 
 - [ ] `/marketing/campaigns` — list + form
 - [ ] `/marketing/promotions` — list + multi-type form
@@ -308,7 +305,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Sprint 10 — HR
 
-### Pages
+### Pages (Sprint 10)
 
 - [ ] `/hr/attendance` — calendar view per user
 - [ ] `/hr/incidents` — list + assign/resolve
@@ -317,11 +314,11 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Sprint 11 — Audit + Notifications
 
-### Components cần thêm
+### Components cần thêm (Sprint 11)
 
 - [ ] (đã có đủ từ các sprint trước)
 
-### Pages
+### Pages (Sprint 11)
 
 - [ ] `/audit` — filter heavy table (actor, action, entity, date range)
 - [ ] Notification dropdown trong Topbar (đã có UI placeholder, cần nối service)
@@ -343,7 +340,10 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Cập nhật log
 
-| Date       | Sprint   | Note                                                                       |
-| ---------- | -------- | -------------------------------------------------------------------------- |
-| 2026-05-16 | Sprint 0 | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                  |
-| 2026-05-16 | Sprint 1 | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`. |
+| Date       | Sprint    | Note                                                                                                                                                                                                                                                                    |
+| ---------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                               |
+| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                              |
+| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                          |
+| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions. |
+| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                        |
