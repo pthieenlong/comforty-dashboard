@@ -519,6 +519,25 @@ function slugify(input: string): string {
     .replace(/(^-|-$)/g, '');
 }
 
+const PLACEHOLDER_PALETTE = [
+  { bg: '1f2937', fg: 'f9fafb' },
+  { bg: 'fef3c7', fg: '92400e' },
+  { bg: 'dbeafe', fg: '1e3a8a' },
+  { bg: 'fce7f3', fg: '9d174d' },
+  { bg: 'e0e7ff', fg: '3730a3' },
+  { bg: 'd1fae5', fg: '065f46' },
+];
+
+function buildImages(seed: ProductSeed, seedIndex: number): string[] {
+  const palette = PLACEHOLDER_PALETTE[seedIndex % PLACEHOLDER_PALETTE.length];
+  const label = encodeURIComponent(seed.sku);
+  const count = 3 + (seedIndex % 3);
+  return Array.from(
+    { length: count },
+    (_, i) => `https://placehold.co/600x800/${palette.bg}/${palette.fg}?text=${label}+${i + 1}`,
+  );
+}
+
 function buildVariants(seed: ProductSeed): IProductVariant[] {
   const combos = cartesian(seed.attributes);
   return combos.map((combo, idx) => {
@@ -551,7 +570,7 @@ export const PRODUCTS: IProduct[] = seeds.map((seed, i) => {
     brandId: seed.brandId,
     categoryId: seed.categoryId,
     status: seed.status,
-    images: [],
+    images: buildImages(seed, i),
     attributes: seed.attributes,
     variants: buildVariants(seed),
     basePrice: seed.basePrice,

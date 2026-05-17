@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideEdit, LucidePackage } from '@lucide/angular';
+import { LucideEdit, LucideImageOff, LucidePackage } from '@lucide/angular';
 import {
   BadgeComponent,
   BreadcrumbComponent,
@@ -56,33 +56,90 @@ const STATUS_VARIANT: Record<ProductStatus, 'success' | 'warning' | 'neutral'> =
         <app-breadcrumb [items]="breadcrumb()" />
 
         <app-card padding="lg">
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div class="flex items-start gap-4 min-w-0">
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,420px)_1fr]">
+            <div class="space-y-3">
               <div
-                class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400"
+                class="relative aspect-3/4 w-full overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200"
               >
-                <app-icon [icon]="packageIcon" size="lg" />
+                @if (p.images.length > 0) {
+                  <img
+                    [src]="p.images[activeImageIndex()]"
+                    [alt]="p.name + ' — ảnh ' + (activeImageIndex() + 1)"
+                    class="h-full w-full object-cover"
+                  />
+                } @else {
+                  <div class="flex h-full w-full items-center justify-center text-slate-400">
+                    <app-icon [icon]="imageOffIcon" size="xl" />
+                  </div>
+                }
               </div>
-              <div class="min-w-0">
-                <h1 class="text-2xl font-bold text-slate-900 truncate">{{ p.name }}</h1>
-                <p class="mt-1 text-sm text-slate-500 font-mono">{{ p.sku }}</p>
-                <div class="mt-2 flex flex-wrap items-center gap-2">
-                  <app-badge [variant]="statusVariant(p.status)" [dot]="true">
-                    {{ statusLabel(p.status) }}
-                  </app-badge>
-                  <span class="text-xs text-slate-500">
-                    Cập nhật: {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
-                  </span>
+
+              @if (p.images.length > 1) {
+                <div class="grid grid-cols-5 gap-2">
+                  @for (img of p.images; track img; let i = $index) {
+                    <button
+                      type="button"
+                      [class]="thumbClasses(i)"
+                      [attr.aria-label]="'Xem ảnh ' + (i + 1)"
+                      [attr.aria-current]="i === activeImageIndex() ? 'true' : null"
+                      (click)="activeImageIndex.set(i)"
+                    >
+                      <img
+                        [src]="img"
+                        [alt]="'Thumbnail ' + (i + 1)"
+                        class="h-full w-full object-cover"
+                      />
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <h1 class="text-2xl font-bold text-slate-900">{{ p.name }}</h1>
+                  <p class="mt-1 text-sm text-slate-500 font-mono">{{ p.sku }}</p>
+                </div>
+                <a [routerLink]="['/catalog/products', p.id, 'edit']" class="shrink-0">
+                  <app-button variant="primary">
+                    <app-icon [icon]="editIcon" size="md" />
+                    Chỉnh sửa
+                  </app-button>
+                </a>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <app-badge [variant]="statusVariant(p.status)" [dot]="true">
+                  {{ statusLabel(p.status) }}
+                </app-badge>
+                <span class="text-xs text-slate-500">
+                  Cập nhật: {{ p.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+
+              <div class="rounded-lg bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-500">Giá cơ bản</p>
+                <p class="mt-1 text-3xl font-bold text-slate-900">
+                  {{ formatPrice(p.basePrice) }} ₫
+                </p>
+                <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500">Variant</p>
+                    <p class="font-semibold text-slate-900">{{ p.variants.length }}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500">Tổng tồn</p>
+                    <p class="font-semibold text-slate-900">{{ totalStock() }}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="flex gap-2 shrink-0">
-              <a [routerLink]="['/catalog/products', p.id, 'edit']">
-                <app-button variant="primary">
-                  <app-icon [icon]="editIcon" size="md" />
-                  Chỉnh sửa
-                </app-button>
-              </a>
+
+              @if (p.description) {
+                <p class="text-sm text-slate-600 line-clamp-3 leading-relaxed">
+                  {{ p.description }}
+                </p>
+              }
             </div>
           </div>
         </app-card>
@@ -96,43 +153,25 @@ const STATUS_VARIANT: Record<ProductStatus, 'success' | 'warning' | 'neutral'> =
               </app-card>
 
               <app-card padding="lg">
-                <h2 class="text-sm font-semibold text-slate-700 mb-3">Tóm tắt</h2>
-                <dl class="space-y-3">
-                  <div>
-                    <dt class="text-xs uppercase tracking-wide text-slate-500">Giá cơ bản</dt>
-                    <dd class="mt-0.5 text-2xl font-bold text-slate-900">
-                      {{ formatPrice(p.basePrice) }} ₫
-                    </dd>
-                  </div>
-                  <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
-                    <div>
-                      <dt class="text-xs uppercase tracking-wide text-slate-500">Variant</dt>
-                      <dd class="mt-0.5 text-lg font-semibold text-slate-900">
-                        {{ p.variants.length }}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt class="text-xs uppercase tracking-wide text-slate-500">Tổng kho</dt>
-                      <dd class="mt-0.5 text-lg font-semibold text-slate-900">
-                        {{ totalStock() }}
-                      </dd>
-                    </div>
-                  </div>
-                  @if (p.attributes.length > 0) {
-                    <div class="pt-3 border-t border-slate-100">
-                      <dt class="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                        Thuộc tính
-                      </dt>
-                      <dd class="flex flex-wrap gap-1">
-                        @for (attr of p.attributes; track attr.key) {
-                          <app-tag variant="neutral">
-                            {{ attr.label }} · {{ attr.values.length }}
-                          </app-tag>
-                        }
-                      </dd>
-                    </div>
-                  }
-                </dl>
+                <h2 class="text-sm font-semibold text-slate-700 mb-3">Thuộc tính</h2>
+                @if (p.attributes.length === 0) {
+                  <p class="text-sm text-slate-400">Chưa có thuộc tính nào.</p>
+                } @else {
+                  <dl class="space-y-3">
+                    @for (attr of p.attributes; track attr.key) {
+                      <div>
+                        <dt class="text-xs uppercase tracking-wide text-slate-500 mb-1">
+                          {{ attr.label }}
+                        </dt>
+                        <dd class="flex flex-wrap gap-1">
+                          @for (v of attr.values; track v) {
+                            <app-tag variant="neutral">{{ v }}</app-tag>
+                          }
+                        </dd>
+                      </div>
+                    }
+                  </dl>
+                }
               </app-card>
             </div>
           </ng-template>
@@ -228,8 +267,18 @@ export class ProductDetailComponent {
   readonly id = input.required<string>();
 
   protected readonly activeTab = signal('overview');
+  protected readonly activeImageIndex = signal(0);
   protected readonly packageIcon = LucidePackage.icon;
   protected readonly editIcon = LucideEdit.icon;
+  protected readonly imageOffIcon = LucideImageOff.icon;
+
+  protected thumbClasses(index: number): string {
+    const base =
+      'aspect-square overflow-hidden rounded-md ring-1 transition focus-visible:outline-2 focus-visible:outline-indigo-500 focus-visible:outline-offset-2';
+    return index === this.activeImageIndex()
+      ? `${base} ring-2 ring-indigo-500`
+      : `${base} ring-slate-200 hover:ring-slate-300`;
+  }
 
   protected readonly product = computed<IProduct | undefined>(() => findProduct(this.id()));
 
