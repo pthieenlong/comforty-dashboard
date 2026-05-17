@@ -15,23 +15,23 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 
 ## Tổng quan tiến độ
 
-| Sprint    | Phạm vi                                    | Trạng thái | Branch                   |
-| --------- | ------------------------------------------ | ---------- | ------------------------ |
-| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`         |
-| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`          |
-| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`          |
-| Sprint 3  | IAM (Users, Roles, Permissions)            | `[x]`      | merged to `dev`          |
-| Sprint 3+ | Storybook setup + stories cho 28 component | `[x]`      | merged to `dev`          |
-| Sprint 3+ | Layout polish (responsive + mock wiring)   | `[x]`      | merged to `dev`          |
-| Sprint 4  | Tenant management                          | `[~]`      | `feat/tenant-management` |
-| Sprint 5  | Product catalog                            | `[ ]`      |                          |
-| Sprint 6  | Customer (CRM)                             | `[ ]`      |                          |
-| Sprint 7  | Inventory                                  | `[ ]`      |                          |
-| Sprint 8  | Orders + Payments                          | `[ ]`      |                          |
-| Sprint 9  | Marketing                                  | `[ ]`      |                          |
-| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                          |
-| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                          |
-| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                          |
+| Sprint    | Phạm vi                                    | Trạng thái | Branch                 |
+| --------- | ------------------------------------------ | ---------- | ---------------------- |
+| Sprint 0  | Repo setup + docs + tooling                | `[x]`      | merged to `main`       |
+| Sprint 1  | Design tokens + UI Tier 1+2 + Layouts      | `[x]`      | merged to `dev`        |
+| Sprint 2  | Auth UI pages (no backend wiring)          | `[x]`      | merged to `dev`        |
+| Sprint 3  | IAM (Users, Roles, Permissions)            | `[x]`      | merged to `dev`        |
+| Sprint 3+ | Storybook setup + stories cho 28 component | `[x]`      | merged to `dev`        |
+| Sprint 3+ | Layout polish (responsive + mock wiring)   | `[x]`      | merged to `dev`        |
+| Sprint 4  | Tenant management                          | `[x]`      | merged to `dev`        |
+| Sprint 5  | Product catalog                            | `[~]`      | `feat/product-catalog` |
+| Sprint 6  | Customer (CRM)                             | `[ ]`      |                        |
+| Sprint 7  | Inventory                                  | `[ ]`      |                        |
+| Sprint 8  | Orders + Payments                          | `[ ]`      |                        |
+| Sprint 9  | Marketing                                  | `[ ]`      |                        |
+| Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                        |
+| Sprint 11 | Audit log + Notifications                  | `[ ]`      |                        |
+| Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                        |
 
 ---
 
@@ -70,12 +70,12 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [ ] **CheckboxGroup** — group nhiều checkbox cho multi-filter
 - [ ] **Radio** + **RadioGroup**
 - [x] **Switch** — toggle on/off
-- [ ] **Textarea** — multi-line input
+- [x] **Textarea** — multi-line input
 - [x] **PasswordInput** — variant Input với toggle show/hide
 - [x] **SearchInput** — variant Input với icon search + clear
-- [ ] **NumberInput** — +/- buttons, min/max, formatter (VNĐ)
+- [x] **NumberInput** — +/- buttons, min/max
 - [x] **Select** — single select dropdown, có search
-- [ ] **MultiSelect** — multiple select với chip
+- [x] **MultiSelect** — multiple select với chip
 - [ ] **Combobox/Autocomplete** — tìm theo SKU/phone/email
 - [ ] **DatePicker** — chọn ngày, calendar grid vi-VN
 - [ ] **DateRangePicker** — chọn khoảng ngày
@@ -104,8 +104,8 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
   - [x] v1: column config + custom cell template + sort + selection + skeleton + empty state
   - [ ] v2: hoàn thiện virtual scroll cho list > 1000 row
 - [ ] **Stepper** — wrap CDK Stepper
-- [ ] **Tree** — wrap CDK Tree (cho Category)
-- [ ] **TreeSelect** — chọn từ tree
+- [x] **Tree** — flatten + indent, expand/collapse, custom row template
+- [x] **TreeSelect** — overlay wrap Tree, ControlValueAccessor
 - [ ] **Transfer** — left-right list (Permission → Role)
 
 ### Specialized
@@ -113,7 +113,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [ ] **PermissionGate** — structural directive ẩn UI theo permission
 - [ ] **CopyButton** — click copy text với feedback
 - [ ] **PhoneInput** — format số ĐT VN
-- [ ] **PriceInput** — variant NumberInput format VNĐ
+- [x] **PriceInput** — format VNĐ với separator, suffix unit
 - [ ] **Chart wrappers** — line/bar/pie wrap ApexCharts
 
 ---
@@ -262,24 +262,34 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 **Mục tiêu**: HQ quản lý Category/Brand/Product, store xem.
 
+**Branch**: `feat/product-catalog` — chia 3 mini-sprint (5a Brand, 5b Category, 5c Product).
+
+### Mock data (chuẩn bị 1 lần cho cả Sprint 5)
+
+- [x] `product.types.ts` — IBrand, ICategory, ICategoryNode, IProduct, IProductVariant, IProductAttribute
+- [x] `brand.mock.ts` — 5 brand (Comforty, Norden, Kyoto, Milano, Saigon Craft)
+- [x] `category.mock.ts` — 18 category n-cấp tree + helpers (buildTree, flatten, getPath, findCategory)
+- [x] `product.mock.ts` — 30 product seed với variant generator (cartesian product attributes), 2–5 variant/product
+
 ### Components cần thêm (Sprint 5)
 
-- [ ] **Tree** (cho Category 3 cấp)
-- [ ] **TreeSelect** (chọn parent category)
-- [ ] **Textarea**
-- [ ] **NumberInput** + **PriceInput**
-- [ ] **FileUpload** + **ImageUploadGrid**
-- [ ] **MultiSelect** (cho variant attributes)
-- [ ] **DataTable v2** (sort + pagination)
+- [x] **Tree** (n-cấp, expand/collapse default open)
+- [x] **TreeSelect** (chọn parent category)
+- [x] **Textarea**
+- [x] **NumberInput** + **PriceInput**
+- [ ] **FileUpload** + **ImageUploadGrid** (defer sang 5c)
+- [x] **MultiSelect** (cho variant attributes)
+- [ ] **DataTable v2** (virtual scroll — defer)
 
-### Pages (Sprint 5)
+### Pages
 
-- [ ] `/catalog/categories` — tree view + add/edit
-- [ ] `/catalog/brands` — list + form
-- [ ] `/catalog/products` — list với filter (category, brand, status)
-- [ ] `/catalog/products/new` — multi-step form (Info → Variants → Images → Pricing)
-- [ ] `/catalog/products/:id` — detail với variant matrix
-- [ ] `/catalog/products/:id/edit` — form edit
+- [x] `/catalog/brands` — list (DataTable + filter status) + form (5a)
+- [x] `/catalog/brands/new` + `/catalog/brands/:id/edit` (5a)
+- [x] `/catalog/categories` — master-detail tree + form (5b)
+- [x] `/catalog/products` — list với filter (category tree, brand, status) + search + pagination (5c.1)
+- [x] `/catalog/products/:id` — detail 3 tab (Tổng quan / Variants matrix / Mô tả) (5c.1)
+- [ ] `/catalog/products/new` — multi-step form (Info → Attributes → Images → Pricing) (5c.2)
+- [ ] `/catalog/products/:id/edit` — form edit (5c.2)
 
 ---
 
@@ -400,3 +410,5 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 | 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                         |
 | 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util. |
 | 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                       |
+| 2026-05-17 | Sprint 5  | Catalog 5a/5b: mock (5 brand, 18 cat, 30 product + variants). 6 component mới (Textarea, NumberInput, PriceInput, MultiSelect, Tree, TreeSelect). Brand list/form + Category master-detail. FileUpload defer 5c.                                                                         |
+| 2026-05-17 | Sprint 5  | Catalog 5c.1: Product list (filter category tree + brand + status + search + pagination, sort) và Product detail (3 tab Overview/Variants matrix/Description). Đổi mock toàn bộ sang domain quần áo (5 brand, 27 cat, 30 product apparel). Form `new`/`edit` defer sang 5c.2.            |
