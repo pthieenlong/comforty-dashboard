@@ -25,7 +25,7 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 | Sprint 3+ | Layout polish (responsive + mock wiring)   | `[x]`      | merged to `dev`     |
 | Sprint 4  | Tenant management                          | `[x]`      | merged to `dev`     |
 | Sprint 5  | Product catalog                            | `[~]`      | `feat/product-form` |
-| Sprint 6  | Customer (CRM)                             | `[ ]`      |                     |
+| Sprint 6  | Customer (CRM)                             | `[~]`      | `feat/customer-crm` |
 | Sprint 7  | Inventory                                  | `[ ]`      |                     |
 | Sprint 8  | Orders + Payments                          | `[ ]`      |                     |
 | Sprint 9  | Marketing                                  | `[ ]`      |                     |
@@ -98,7 +98,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [x] **Tabs** — tab switcher với signal state, TabPanel directive
 - [x] **Pagination** — page number + prev/next + range display
 - [x] **Tag/Chip** — label với close button
-- [ ] **Timeline** — order status, audit entry
+- [x] **Timeline** — vertical timeline với dot variant + icon + custom slot
 - [x] **DescriptionList** — key-value chi tiết
 - [~] **DataTable** — sort, filter, paginate, select, virtual scroll
   - [x] v1: column config + custom cell template + sort + selection + skeleton + empty state
@@ -299,12 +299,17 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ### Components cần thêm (Sprint 6)
 
-- [ ] **Timeline** (order history)
+- [x] **Timeline** (order history, loyalty events; reuse Sprint 11)
+
+### Mock data
+
+- [x] `customer.types.ts` — ICustomer, ICustomerAddress, ICustomerOrder + line items, ILoyaltyEvent
+- [x] `customer.mock.ts` — 25 khách hàng + generator order (link tới PRODUCTS) + loyalty events, TIER_META
 
 ### Pages (Sprint 6)
 
-- [ ] `/customers` — list với filter (tier, has_orders, date range)
-- [ ] `/customers/:id` — detail (Info / Addresses / Orders / Loyalty tabs)
+- [x] `/customers` — list với filter (tier, has_orders, date range), DataTable + sort + pagination
+- [x] `/customers/:id` — detail 4 tab Info/Addresses/Orders (inline expand product lines)/Loyalty (Timeline + tier benefits)
 
 ---
 
@@ -401,15 +406,16 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Cập nhật log
 
-| Date       | Sprint    | Note                                                                                                                                                                                                                                                                                                      |
-| ---------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                                                                 |
-| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                                                                |
-| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                                                            |
-| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                                   |
-| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                                          |
-| 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util.                  |
-| 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                                        |
-| 2026-05-17 | Sprint 5  | Catalog 5a/5b: mock (5 brand, 18 cat, 30 product + variants). 6 component mới (Textarea, NumberInput, PriceInput, MultiSelect, Tree, TreeSelect). Brand list/form + Category master-detail. FileUpload defer 5c.                                                                                          |
-| 2026-05-17 | Sprint 5  | Catalog 5c.1: Product list (filter category tree + brand + status + search + pagination, sort) và Product detail (3 tab Overview/Variants matrix/Description). Đổi mock toàn bộ sang domain quần áo (5 brand, 27 cat, 30 product apparel). Form `new`/`edit` defer sang 5c.2.                             |
-| 2026-05-17 | Sprint 5  | Catalog 5c.2: Product multi-step form (Info → Attributes → Images → Pricing) hybrid Stepper (strict new / free edit). 3 component mới (Stepper, FileUpload, ImageUploadGrid CDK drag-drop). Attribute preset list, auto-gen variant matrix preserve giá/stock theo combo key. Detail gallery placeholder. |
+| Date       | Sprint    | Note                                                                                                                                                                                                                                                                                                                      |
+| ---------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                                                                                 |
+| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                                                                                |
+| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                                                                            |
+| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                                                   |
+| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                                                          |
+| 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util.                                  |
+| 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                                                        |
+| 2026-05-17 | Sprint 5  | Catalog 5a/5b: mock (5 brand, 18 cat, 30 product + variants). 6 component mới (Textarea, NumberInput, PriceInput, MultiSelect, Tree, TreeSelect). Brand list/form + Category master-detail. FileUpload defer 5c.                                                                                                          |
+| 2026-05-17 | Sprint 5  | Catalog 5c.1: Product list (filter category tree + brand + status + search + pagination, sort) và Product detail (3 tab Overview/Variants matrix/Description). Đổi mock toàn bộ sang domain quần áo (5 brand, 27 cat, 30 product apparel). Form `new`/`edit` defer sang 5c.2.                                             |
+| 2026-05-17 | Sprint 5  | Catalog 5c.2: Product multi-step form (Info → Attributes → Images → Pricing) hybrid Stepper (strict new / free edit). 3 component mới (Stepper, FileUpload, ImageUploadGrid CDK drag-drop). Attribute preset list, auto-gen variant matrix preserve giá/stock theo combo key. Detail gallery placeholder.                 |
+| 2026-05-17 | Sprint 6  | CRM: mock 25 khách hàng + order generator link tới PRODUCTS + loyalty events, TIER_META 4 hạng (Bronze/Silver/Gold/Platinum). Timeline component mới. 2 page: list (filter tier + has_orders + date range), detail 4 tab Info/Addresses (read-only)/Orders (inline expand line items)/Loyalty (Timeline + tier benefits). |
