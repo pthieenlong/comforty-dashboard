@@ -3,6 +3,7 @@ import {
   LucideBarChart3,
   LucideBoxes,
   LucideBuilding2,
+  LucideClipboardCheck,
   LucideClipboardList,
   LucideFileText,
   LucideLayoutDashboard,
@@ -51,7 +52,9 @@ export const SIDEBAR_NAV: NavGroup[] = [
     label: 'Kho',
     items: [
       { label: 'Tồn kho', icon: LucideBoxes.icon, to: '/inventory/stock' },
+      { label: 'Biến động', icon: LucideClipboardList.icon, to: '/inventory/movements' },
       { label: 'Điều chuyển', icon: LucideArchive.icon, to: '/inventory/transfers' },
+      { label: 'Kiểm kê', icon: LucideClipboardCheck.icon, to: '/inventory/stock-take' },
     ],
   },
   {

@@ -43,3 +43,4 @@ export * from './stepper/stepper.component';
 export * from './file-upload/file-upload.component';
 export * from './file-upload/image-upload-grid.component';
 export * from './timeline/timeline.component';
+export * from './drawer/drawer.component';
