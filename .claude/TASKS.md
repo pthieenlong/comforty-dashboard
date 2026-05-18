@@ -26,7 +26,7 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 | Sprint 4  | Tenant management                          | `[x]`      | merged to `dev`     |
 | Sprint 5  | Product catalog                            | `[~]`      | `feat/product-form` |
 | Sprint 6  | Customer (CRM)                             | `[~]`      | `feat/customer-crm` |
-| Sprint 7  | Inventory                                  | `[ ]`      |                     |
+| Sprint 7  | Inventory                                  | `[~]`      | `feat/inventory`    |
 | Sprint 8  | Orders + Payments                          | `[ ]`      |                     |
 | Sprint 9  | Marketing                                  | `[ ]`      |                     |
 | Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                     |
@@ -86,7 +86,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 - [x] **Modal/Dialog** — CDK Dialog + dismissible header + footer slot
 - [x] **ConfirmDialog** — wrapper Modal cho yes/no action với service
-- [ ] **Drawer** — slide panel từ phải
+- [x] **Drawer** — slide panel từ phải (CDK Dialog + DrawerService)
 - [x] **Alert** — inline message (success/warning/error/info)
 - [x] **EmptyState** — khi list rỗng
 - [x] **Skeleton** — loading placeholder
@@ -325,13 +325,13 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ### Pages (Sprint 7)
 
-- [ ] `/inventory/stock` — xem tồn theo warehouse
-- [ ] `/inventory/movements` — log mọi biến động
-- [ ] `/inventory/transfers` — list + flow stepper
-- [ ] `/inventory/transfers/new` — tạo transfer
-- [ ] `/inventory/transfers/:id` — detail + action (confirm/cancel)
-- [ ] `/inventory/stock-take` — list kiểm kê
-- [ ] `/inventory/stock-take/:id` — UI nhập số liệu
+- [x] `/inventory/stock` — flat list theo (warehouse × variant), filter warehouse/low-stock/search + Drawer lọc nâng cao (7a)
+- [x] `/inventory/movements` — log với filter loại/kho/date range (7a)
+- [x] `/inventory/transfers` — list với filter status, link sang detail (7b)
+- [x] `/inventory/transfers/new` — 4-step form (Info → Items → Review → Submit), strict mode, validate stock đủ (7b)
+- [x] `/inventory/transfers/:id` — detail + Timeline + action chuyển trạng thái optimistic (7b)
+- [x] `/inventory/stock-take` — list phiên kiểm kê với filter status/warehouse + variance summary (7c)
+- [x] `/inventory/stock-take/:id` — UI nhập số liệu với search + filter (chưa đếm / có chênh lệch), stats card, action draft/complete/cancel (7c)
 
 ---
 
@@ -406,16 +406,18 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Cập nhật log
 
-| Date       | Sprint    | Note                                                                                                                                                                                                                                                                                                                      |
-| ---------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                                                                                 |
-| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                                                                                |
-| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                                                                            |
-| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                                                   |
-| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                                                          |
-| 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util.                                  |
-| 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                                                        |
-| 2026-05-17 | Sprint 5  | Catalog 5a/5b: mock (5 brand, 18 cat, 30 product + variants). 6 component mới (Textarea, NumberInput, PriceInput, MultiSelect, Tree, TreeSelect). Brand list/form + Category master-detail. FileUpload defer 5c.                                                                                                          |
-| 2026-05-17 | Sprint 5  | Catalog 5c.1: Product list (filter category tree + brand + status + search + pagination, sort) và Product detail (3 tab Overview/Variants matrix/Description). Đổi mock toàn bộ sang domain quần áo (5 brand, 27 cat, 30 product apparel). Form `new`/`edit` defer sang 5c.2.                                             |
-| 2026-05-17 | Sprint 5  | Catalog 5c.2: Product multi-step form (Info → Attributes → Images → Pricing) hybrid Stepper (strict new / free edit). 3 component mới (Stepper, FileUpload, ImageUploadGrid CDK drag-drop). Attribute preset list, auto-gen variant matrix preserve giá/stock theo combo key. Detail gallery placeholder.                 |
-| 2026-05-17 | Sprint 6  | CRM: mock 25 khách hàng + order generator link tới PRODUCTS + loyalty events, TIER_META 4 hạng (Bronze/Silver/Gold/Platinum). Timeline component mới. 2 page: list (filter tier + has_orders + date range), detail 4 tab Info/Addresses (read-only)/Orders (inline expand line items)/Loyalty (Timeline + tier benefits). |
+| Date       | Sprint    | Note                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-16 | Sprint 0  | Setup repo, docs, tooling. Tạo 3 branch main/staging/dev.                                                                                                                                                                                                                                                                                                                                                                  |
+| 2026-05-16 | Sprint 1  | Design tokens + 13 UI components + AuthLayout + AdminLayout. PR vào `dev`.                                                                                                                                                                                                                                                                                                                                                 |
+| 2026-05-16 | Sprint 2  | Auth UI pages (Login/Forgot/Reset) + 404/403 + 3 components (PasswordInput, Checkbox, Alert). Service/interceptor/guard defer.                                                                                                                                                                                                                                                                                             |
+| 2026-05-17 | Sprint 3  | IAM: 7 pages (Users CRUD, Roles list/detail, Permissions list) + 12 components (DataTable v1, Pagination, Select, Modal+ConfirmDialog, Toast wrapper, SearchInput, Switch, Tag, EmptyState, Skeleton, Breadcrumb, Tabs). Mock data 28 users + 9 roles + 40 permissions.                                                                                                                                                    |
+| 2026-05-17 | Storybook | Setup Storybook 10 + 28 stories cho toàn bộ UI components (ui/forms/feedback/overlay/navigation/data). Interaction test cho Modal + DataTable. Exclude stories khỏi prod bundle.                                                                                                                                                                                                                                           |
+| 2026-05-17 | Sprint 3+ | Layout polish: tenant/auth/noti mock stores + topbar wiring (switcher, user menu, noti dropdown 360px), responsive sidebar (desktop collapse + mobile drawer), route loading bar, 11 placeholder pages + breadcrumb. PageHeader, PlaceholderPage, RelativeTime pipe, simulateDelay util.                                                                                                                                   |
+| 2026-05-17 | Sprint 4  | Tenant management: extend `ITenant` (+8 field), `core/warehouse/` 6 mock, 3 pages (list grid card, detail 3 tabs Info/Users/Warehouse, edit form readonly). DescriptionList component mới. Lazy route `/tenants` thay placeholder.                                                                                                                                                                                         |
+| 2026-05-17 | Sprint 5  | Catalog 5a/5b: mock (5 brand, 18 cat, 30 product + variants). 6 component mới (Textarea, NumberInput, PriceInput, MultiSelect, Tree, TreeSelect). Brand list/form + Category master-detail. FileUpload defer 5c.                                                                                                                                                                                                           |
+| 2026-05-17 | Sprint 5  | Catalog 5c.1: Product list (filter category tree + brand + status + search + pagination, sort) và Product detail (3 tab Overview/Variants matrix/Description). Đổi mock toàn bộ sang domain quần áo (5 brand, 27 cat, 30 product apparel). Form `new`/`edit` defer sang 5c.2.                                                                                                                                              |
+| 2026-05-17 | Sprint 5  | Catalog 5c.2: Product multi-step form (Info → Attributes → Images → Pricing) hybrid Stepper (strict new / free edit). 3 component mới (Stepper, FileUpload, ImageUploadGrid CDK drag-drop). Attribute preset list, auto-gen variant matrix preserve giá/stock theo combo key. Detail gallery placeholder.                                                                                                                  |
+| 2026-05-17 | Sprint 6  | CRM: mock 25 khách hàng + order generator link tới PRODUCTS + loyalty events, TIER_META 4 hạng (Bronze/Silver/Gold/Platinum). Timeline component mới. 2 page: list (filter tier + has_orders + date range), detail 4 tab Info/Addresses (read-only)/Orders (inline expand line items)/Loyalty (Timeline + tier benefits).                                                                                                  |
+| 2026-05-18 | Sprint 7  | Inventory 7a+7b: mock (stock ~150 row, 80 movements, 12 transfers). Drawer component mới (CDK Dialog slide từ phải). 5 page: stock (filter + Drawer nâng cao), movements (filter type/kho/date), transfers list, transfer-form 4-step strict (Info → Items → Review → Submit) với validate stock đủ, transfer-detail với Timeline + action chuyển trạng thái optimistic. Stock-take defer 7c. Sidebar bổ sung "Biến động". |
+| 2026-05-18 | Sprint 7  | Inventory 7c: mock 8 phiên kiểm kê (mix 4 status, scope full/partial, lines counted/null theo status). 2 page: stock-take list (filter + variance summary mỗi phiên) và stock-take counter (4 stats card, filter chưa đếm/có chênh lệch, inline input đếm và note, action Lưu nháp/Hoàn tất với confirm dialog/Huỷ phiên với optimistic status update). Sidebar bổ sung "Kiểm kê".                                         |
