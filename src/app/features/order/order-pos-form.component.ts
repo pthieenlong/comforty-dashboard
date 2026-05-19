@@ -8,7 +8,6 @@ import {
   BreadcrumbComponent,
   ButtonComponent,
   CardComponent,
-  CheckboxComponent,
   ComboboxComponent,
   type ComboboxOption,
   FormFieldComponent,
@@ -71,7 +70,6 @@ const PAYMENT_METHOD_OPTIONS: SelectOption<PaymentMethod>[] = (
     BreadcrumbComponent,
     ButtonComponent,
     CardComponent,
-    CheckboxComponent,
     ComboboxComponent,
     CurrencyPipe,
     FormFieldComponent,
@@ -104,13 +102,28 @@ const PAYMENT_METHOD_OPTIONS: SelectOption<PaymentMethod>[] = (
             [appStepperStepValid]="customerStepValid()"
           >
             <div class="space-y-4">
-              <app-checkbox
-                id="pos-walkin"
-                [ngModel]="isWalkIn()"
-                (ngModelChange)="onWalkInChange($event)"
-              >
-                Khách lẻ (walk-in)
-              </app-checkbox>
+              <div role="radiogroup" aria-label="Loại khách" class="grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  role="radio"
+                  [attr.aria-checked]="!isWalkIn()"
+                  [class]="customerModeBtn(!isWalkIn())"
+                  (click)="setWalkIn(false)"
+                >
+                  <span class="text-sm font-medium">Khách có trong hệ thống</span>
+                  <span class="text-xs text-slate-500">Chọn từ danh sách CRM</span>
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  [attr.aria-checked]="isWalkIn()"
+                  [class]="customerModeBtn(isWalkIn())"
+                  (click)="setWalkIn(true)"
+                >
+                  <span class="text-sm font-medium">Khách lẻ (walk-in)</span>
+                  <span class="text-xs text-slate-500">Không lưu thông tin khách</span>
+                </button>
+              </div>
 
               @if (!isWalkIn()) {
                 <app-form-field for="pos-customer" label="Tìm khách hàng" [required]="true">
@@ -139,6 +152,13 @@ const PAYMENT_METHOD_OPTIONS: SelectOption<PaymentMethod>[] = (
                     }
                   </div>
                 }
+              } @else {
+                <div
+                  class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800"
+                >
+                  Đơn sẽ được tạo dưới tên <strong>Khách lẻ</strong> — không có thông tin liên hệ và
+                  không tích điểm tích luỹ.
+                </div>
               }
 
               <div class="flex justify-end pt-2">
@@ -418,11 +438,19 @@ export class OrderPosFormComponent {
     () => this.cartStepValid() && this.paymentMethod() !== null && this.total() > 0,
   );
 
-  protected onWalkInChange(checked: boolean): void {
-    this.isWalkIn.set(checked);
-    if (checked) {
+  protected setWalkIn(value: boolean): void {
+    this.isWalkIn.set(value);
+    if (value) {
       this.customerId.set(null);
     }
+  }
+
+  protected customerModeBtn(active: boolean): string {
+    const base =
+      'flex flex-col items-start gap-0.5 rounded-md border px-3 py-2.5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500';
+    return active
+      ? `${base} border-indigo-500 bg-indigo-50 ring-1 ring-indigo-200`
+      : `${base} border-slate-200 bg-white hover:border-slate-300`;
   }
 
   protected onCustomerChange(id: string | null): void {
