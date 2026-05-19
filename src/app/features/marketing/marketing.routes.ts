@@ -22,6 +22,19 @@ export const MARKETING_ROUTES: Routes = [
   {
     path: 'promotions',
     loadComponent: () =>
-      import('./promotions-placeholder.component').then((m) => m.PromotionsPlaceholderComponent),
+      import('./promotions-list.component').then((m) => m.PromotionsListComponent),
+  },
+  {
+    path: 'promotions/new',
+    loadComponent: () => import('./promotion-form.component').then((m) => m.PromotionFormComponent),
+  },
+  {
+    path: 'promotions/:id',
+    loadComponent: () =>
+      import('./promotion-detail.component').then((m) => m.PromotionDetailComponent),
+  },
+  {
+    path: 'promotions/:id/edit',
+    loadComponent: () => import('./promotion-form.component').then((m) => m.PromotionFormComponent),
   },
 ];

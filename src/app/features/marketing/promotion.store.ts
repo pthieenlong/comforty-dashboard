@@ -38,4 +38,21 @@ export class PromotionStore {
       this._saving.set(false);
     }
   }
+
+  async upsert(promotion: IPromotion): Promise<IPromotion> {
+    this._saving.set(true);
+    try {
+      await simulateDelay(null, 200, 400);
+      this._promotions.update((list) => {
+        const idx = list.findIndex((p) => p.id === promotion.id);
+        if (idx === -1) return [promotion, ...list];
+        const copy = [...list];
+        copy[idx] = promotion;
+        return copy;
+      });
+      return promotion;
+    } finally {
+      this._saving.set(false);
+    }
+  }
 }
