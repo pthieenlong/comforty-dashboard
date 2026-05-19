@@ -61,7 +61,10 @@ export const SIDEBAR_NAV: NavGroup[] = [
   },
   {
     label: 'Marketing',
-    items: [{ label: 'Khuyến mãi', icon: LucideMegaphone.icon, to: '/marketing/promotions' }],
+    items: [
+      { label: 'Chiến dịch', icon: LucideMegaphone.icon, to: '/marketing/campaigns' },
+      { label: 'Khuyến mãi', icon: LucideClipboardList.icon, to: '/marketing/promotions' },
+    ],
   },
   {
     label: 'Nhân sự',

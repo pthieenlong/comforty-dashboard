@@ -34,4 +34,21 @@ export class CampaignStore {
       this._saving.set(false);
     }
   }
+
+  async upsert(campaign: ICampaign): Promise<ICampaign> {
+    this._saving.set(true);
+    try {
+      await simulateDelay(null, 200, 400);
+      this._campaigns.update((list) => {
+        const idx = list.findIndex((c) => c.id === campaign.id);
+        if (idx === -1) return [campaign, ...list];
+        const copy = [...list];
+        copy[idx] = campaign;
+        return copy;
+      });
+      return campaign;
+    } finally {
+      this._saving.set(false);
+    }
+  }
 }
