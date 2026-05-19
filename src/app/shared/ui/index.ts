@@ -33,6 +33,7 @@ export * from './data-table/data-table-virtual.component';
 export * from './data-table/data-table.types';
 export * from './combobox/combobox.component';
 export * from './date-range-picker/date-range-picker.component';
+export * from './date-picker/date-picker.component';
 export * from './page-header/page-header.component';
 export * from './placeholder-page/placeholder-page.component';
 export * from './description-list/description-list.component';
