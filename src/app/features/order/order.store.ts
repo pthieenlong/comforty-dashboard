@@ -68,6 +68,23 @@ export class OrderStore {
     }
   }
 
+  async createOrder(order: IOrder): Promise<IOrder> {
+    this._saving.set(true);
+    try {
+      await simulateDelay(null, 250, 500);
+      this._orders.update((list) => [order, ...list]);
+      return order;
+    } finally {
+      this._saving.set(false);
+    }
+  }
+
+  nextOrderCode(): string {
+    // ORD prefix + zero-padded sequence based on current length.
+    const seq = this._orders().length + 1;
+    return `ORD${String(seq).padStart(4, '0')}`;
+  }
+
   async addRefund(refund: IRefund): Promise<void> {
     this._saving.set(true);
     try {

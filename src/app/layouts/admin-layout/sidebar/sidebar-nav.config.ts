@@ -5,6 +5,7 @@ import {
   LucideBuilding2,
   LucideClipboardCheck,
   LucideClipboardList,
+  LucideCreditCard,
   LucideFileText,
   LucideLayoutDashboard,
   LucideMegaphone,
@@ -37,6 +38,7 @@ export const SIDEBAR_NAV: NavGroup[] = [
     label: 'Bán hàng',
     items: [
       { label: 'Đơn hàng', icon: LucideShoppingCart.icon, to: '/orders' },
+      { label: 'Thanh toán', icon: LucideCreditCard.icon, to: '/payments' },
       { label: 'Khách hàng', icon: LucideUsers.icon, to: '/customers' },
     ],
   },

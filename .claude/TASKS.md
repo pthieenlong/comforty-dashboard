@@ -27,7 +27,7 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 | Sprint 5  | Product catalog                            | `[~]`      | `feat/product-form` |
 | Sprint 6  | Customer (CRM)                             | `[~]`      | `feat/customer-crm` |
 | Sprint 7  | Inventory                                  | `[~]`      | `feat/inventory`    |
-| Sprint 8  | Orders + Payments                          | `[~]`      | `feat/orders`       |
+| Sprint 8  | Orders + Payments                          | `[x]`      | merged to `dev`     |
 | Sprint 9  | Marketing                                  | `[ ]`      |                     |
 | Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                     |
 | Sprint 11 | Audit log + Notifications                  | `[ ]`      |                     |
@@ -362,9 +362,9 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 - [x] `/orders` — list với filter (channel, status, date range, store, search) + sort + pagination (8b)
 - [x] `/orders/:id` — detail 3 tab Items/Tiến trình/Hoàn hàng + sidebar Khách hàng + Thanh toán, action theo state (confirm/preparing/shipping/completed/cancel/refund line-item) (8b)
-- [ ] `/orders/new` — POS Stepper 3-step (Customer → Cart → Payment) (8c)
-- [ ] `/payments` — list payment với filter method/status/date (8c)
-- [ ] `/payments/:id` — detail link tới order (8c)
+- [x] `/orders/new` — POS Stepper 3-step (Customer/walk-in → Cart Combobox + qty stepper → Payment + summary), submit tạo đơn POS hoàn tất + payment paid synchronously (8c)
+- [x] `/payments` — list 6 column với filter (search/method/status/tenant/date range) + sort + pagination (8c)
+- [x] `/payments/:id` — detail method icon + linked-order card (8c)
 
 ---
 
@@ -437,3 +437,4 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 | 2026-05-18 | Sprint 8  | Orders 8a (foundation): mock 80 orders (60 online + 20 POS) trải 5 store tenant với 9 OrderStatus theo distribution plan, 80 payments 1-1 và 8 refunds (4 full + 4 partial line-item). OrderStore (transition optimistic, addRefund) + PaymentStore. 3 component mới: Combobox (CDK Overlay + async search + keyboard nav + custom option template), DateRangePicker (popover 1 tháng vi-VN Monday-first), DataTable v4 virtual scroll (cdk-virtual-scroll-viewport, cùng ColumnDef API). Pages 8b/8c defer.                                                                                                                                                                                                                                                         |
 | 2026-05-18 | Storybook | Backfill 14 story còn nợ: Combobox + DateRangePicker + DataTableVirtual (Sprint 8a); MultiSelect + Textarea + NumberInput + PriceInput + FileUpload + ImageUploadGrid + TreeSelect (Sprint 5); Drawer (Sprint 7); Stepper + Tree + Timeline + DescriptionList + PageHeader + PlaceholderPage (Sprint 4-6). Tổng 43 story. Build storybook pass.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | 2026-05-19 | Sprint 8  | Orders 8b: 2 page + 1 dialog. `/orders` list với 5 filter (search/channel/status/tenant/date-range qua DateRangePicker) + sort + pagination + 6 column DataTable; `/orders/:id` detail với Card header (status icon wrap, 2-3 action button theo state mapping), Tabs 3 panel (Items + footer summary subtotal/discount/shipping/total/refunded · Tiến trình Timeline với staff actor · Hoàn hàng list), sidebar 2 card (Khách hàng + shipping carrier/tracking · Thanh toán DescriptionList). RefundDialog line-item: checkbox + qty input bound max theo `qty - refundedQuantity`, select lý do, ghi chú, tổng tiền computed. Action 5 transition + cancel confirm + refund flow → addRefund auto chuyển partial/full refunded. Placeholder removed, routes wired. |
+| 2026-05-19 | Sprint 8  | Orders 8c: POS flow + Payments. `/orders/new` Stepper strict 3-step (Customer + walk-in checkbox + Combobox search · Cart Combobox add + qty stepper +/- + remove + subtotal · Payment method Select + discount PriceInput + ghi chú + summary card), submit tạo order channel='pos' status='completed' và payment 'paid' đồng thời rồi navigate detail. `/payments` list 6 column với 5 filter; `/payments/:id` detail method icon wrap + linked-order card. Store mở rộng: OrderStore.createOrder + nextOrderCode, PaymentStore.addPayment + nextPaymentCode + findByTenant. Sidebar bổ sung 'Thanh toán' (LucideCreditCard) trong group 'Bán hàng'. App routes thêm `/payments` lazy.                                                                             |

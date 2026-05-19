@@ -19,8 +19,8 @@ const noop = (): void => undefined;
   selector: 'app-checkbox',
   imports: [IconComponent],
   template: `
-    <label [for]="id()" class="inline-flex items-start gap-2 cursor-pointer select-none">
-      <span class="relative inline-flex shrink-0 mt-0.5">
+    <label class="inline-flex items-start gap-2 cursor-pointer select-none">
+      <span class="relative inline-flex h-4 w-4 shrink-0 mt-0.5">
         <input
           #input
           type="checkbox"
@@ -29,11 +29,11 @@ const noop = (): void => undefined;
           [disabled]="disabled()"
           [attr.aria-describedby]="describedBy()"
           [attr.aria-invalid]="invalid() ? 'true' : null"
-          class="peer sr-only"
+          class="peer absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
           (change)="handleChange($event)"
           (blur)="handleBlur()"
         />
-        <span [class]="boxClasses()">
+        <span [class]="boxClasses()" aria-hidden="true">
           @if (checked() && !indeterminate()) {
             <app-icon [icon]="checkIcon" size="sm" [strokeWidth]="3" />
           } @else if (indeterminate()) {
