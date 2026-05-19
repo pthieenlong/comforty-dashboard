@@ -37,4 +37,16 @@ export const MARKETING_ROUTES: Routes = [
     path: 'promotions/:id/edit',
     loadComponent: () => import('./promotion-form.component').then((m) => m.PromotionFormComponent),
   },
+  {
+    path: 'vouchers',
+    loadComponent: () => import('./vouchers-list.component').then((m) => m.VouchersListComponent),
+  },
+  {
+    path: 'vouchers/new',
+    loadComponent: () => import('./voucher-form.component').then((m) => m.VoucherFormComponent),
+  },
+  {
+    path: 'vouchers/:id',
+    loadComponent: () => import('./voucher-detail.component').then((m) => m.VoucherDetailComponent),
+  },
 ];

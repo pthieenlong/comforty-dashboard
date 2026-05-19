@@ -13,6 +13,7 @@ import {
   LucideShieldCheck,
   LucideShoppingCart,
   LucideStore,
+  LucideTicket,
   LucideUserCog,
   LucideUsers,
   type LucideIconData,
@@ -64,6 +65,7 @@ export const SIDEBAR_NAV: NavGroup[] = [
     items: [
       { label: 'Chiến dịch', icon: LucideMegaphone.icon, to: '/marketing/campaigns' },
       { label: 'Khuyến mãi', icon: LucideClipboardList.icon, to: '/marketing/promotions' },
+      { label: 'Voucher', icon: LucideTicket.icon, to: '/marketing/vouchers' },
     ],
   },
   {
