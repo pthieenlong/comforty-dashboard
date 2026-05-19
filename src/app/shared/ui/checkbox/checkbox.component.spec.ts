@@ -62,6 +62,16 @@ describe('CheckboxComponent', () => {
     expect(input.checked).toBe(false);
   });
 
+  it('exposes the input as a full-size interactive surface (not sr-only)', () => {
+    const input = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    // The native input must cover the full visible area so a real-browser
+    // click on the box hits the input itself (rather than relying on label
+    // propagation, which is unreliable with nested inputs in some envs).
+    expect(input.className).toContain('absolute');
+    expect(input.className).toContain('inset-0');
+    expect(input.className).not.toContain('sr-only');
+  });
+
   it('reflects writeValue when the host signal flips', async () => {
     host.value.set(true);
     fixture.detectChanges();
