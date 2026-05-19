@@ -19,7 +19,7 @@ const noop = (): void => undefined;
   selector: 'app-checkbox',
   imports: [IconComponent],
   template: `
-    <label [for]="id()" class="inline-flex items-start gap-2 cursor-pointer select-none">
+    <label class="inline-flex items-start gap-2 cursor-pointer select-none">
       <span class="relative inline-flex h-4 w-4 shrink-0 mt-0.5">
         <input
           #input
