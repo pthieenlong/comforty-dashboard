@@ -12,7 +12,10 @@ import {
   LucidePackage,
   LucideShieldCheck,
   LucideShoppingCart,
+  LucideMessageSquare,
+  LucideStar,
   LucideStore,
+  LucideTicket,
   LucideUserCog,
   LucideUsers,
   type LucideIconData,
@@ -43,6 +46,13 @@ export const SIDEBAR_NAV: NavGroup[] = [
     ],
   },
   {
+    label: 'CRM',
+    items: [
+      { label: 'Đánh giá', icon: LucideStar.icon, to: '/crm/reviews' },
+      { label: 'Yêu cầu hỗ trợ', icon: LucideMessageSquare.icon, to: '/crm/tickets' },
+    ],
+  },
+  {
     label: 'Sản phẩm',
     items: [
       { label: 'Danh mục', icon: LucideClipboardList.icon, to: '/catalog/categories' },
@@ -61,7 +71,11 @@ export const SIDEBAR_NAV: NavGroup[] = [
   },
   {
     label: 'Marketing',
-    items: [{ label: 'Khuyến mãi', icon: LucideMegaphone.icon, to: '/marketing/promotions' }],
+    items: [
+      { label: 'Chiến dịch', icon: LucideMegaphone.icon, to: '/marketing/campaigns' },
+      { label: 'Khuyến mãi', icon: LucideClipboardList.icon, to: '/marketing/promotions' },
+      { label: 'Voucher', icon: LucideTicket.icon, to: '/marketing/vouchers' },
+    ],
   },
   {
     label: 'Nhân sự',
