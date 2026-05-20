@@ -10,4 +10,12 @@ export const CRM_ROUTES: Routes = [
     path: 'reviews/:id',
     loadComponent: () => import('./review-detail.component').then((m) => m.ReviewDetailComponent),
   },
+  {
+    path: 'tickets',
+    loadComponent: () => import('./tickets-list.component').then((m) => m.TicketsListComponent),
+  },
+  {
+    path: 'tickets/:id',
+    loadComponent: () => import('./ticket-detail.component').then((m) => m.TicketDetailComponent),
+  },
 ];
