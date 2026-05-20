@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   LucideArrowDownCircle,
@@ -9,9 +9,12 @@ import {
   LucideChevronDown,
   LucideChevronUp,
   LucideClock,
+  LucideMessageSquare,
   LucidePackage,
   LucideRotateCcw,
+  LucideShoppingBag,
   LucideSparkles,
+  LucideStar,
   LucideTruck,
   LucideX,
   type LucideIconData,
@@ -34,6 +37,9 @@ import {
   type TimelineDotVariant,
 } from '@/shared/ui';
 import { TIER_META, findCustomer } from './customer.mock';
+import { InquiryStore } from './inquiry.store';
+import { ReviewStore } from './review.store';
+import { TicketStore } from './ticket.store';
 import type {
   CustomerOrderStatus,
   Gender,
@@ -87,6 +93,13 @@ const LOYALTY_VARIANT: Record<LoyaltyEventType, TimelineDotVariant> = {
   adjust: 'info',
   expire: 'neutral',
 };
+
+export type ActivitySource = 'order' | 'review' | 'ticket' | 'inquiry' | 'loyalty';
+
+interface ActivityData {
+  source: ActivitySource;
+  link: string[];
+}
 
 @Component({
   selector: 'app-customer-detail',
@@ -420,6 +433,78 @@ const LOYALTY_VARIANT: Record<LoyaltyEventType, TimelineDotVariant> = {
               </app-card>
             </div>
           </ng-template>
+
+          <ng-template
+            appTabPanel="activity"
+            [appTabPanelLabel]="'Hoạt động (' + activityEntries().length + ')'"
+          >
+            <app-card padding="lg">
+              <div class="mb-4 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === '')"
+                  (click)="activitySource.set('')"
+                >
+                  Tất cả
+                </button>
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === 'order')"
+                  (click)="activitySource.set('order')"
+                >
+                  Đơn hàng
+                </button>
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === 'review')"
+                  (click)="activitySource.set('review')"
+                >
+                  Đánh giá
+                </button>
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === 'ticket')"
+                  (click)="activitySource.set('ticket')"
+                >
+                  Yêu cầu hỗ trợ
+                </button>
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === 'inquiry')"
+                  (click)="activitySource.set('inquiry')"
+                >
+                  Liên hệ
+                </button>
+                <button
+                  type="button"
+                  [class]="sourceBtn(activitySource() === 'loyalty')"
+                  (click)="activitySource.set('loyalty')"
+                >
+                  Loyalty
+                </button>
+              </div>
+
+              @if (activityEntries().length === 0) {
+                <app-empty-state
+                  title="Không có hoạt động"
+                  description="Khách hàng chưa có hoạt động khớp bộ lọc."
+                />
+              } @else {
+                <app-timeline [entries]="activityEntries()">
+                  <ng-template let-entry="entry">
+                    @if (entry.data?.link) {
+                      <a
+                        [routerLink]="entry.data.link"
+                        class="text-xs text-indigo-600 hover:text-indigo-700"
+                      >
+                        Xem chi tiết →
+                      </a>
+                    }
+                  </ng-template>
+                </app-timeline>
+              }
+            </app-card>
+          </ng-template>
         </app-tabs>
       </div>
     } @else {
@@ -435,15 +520,23 @@ const LOYALTY_VARIANT: Record<LoyaltyEventType, TimelineDotVariant> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerDetailComponent {
+  private readonly reviewStore = inject(ReviewStore);
+  private readonly ticketStore = inject(TicketStore);
+  private readonly inquiryStore = inject(InquiryStore);
+
   readonly id = input.required<string>();
 
   protected readonly activeTab = signal('info');
   protected readonly openOrderIds = signal<Set<string>>(new Set<string>());
+  protected readonly activitySource = signal<'' | ActivitySource>('');
 
   protected readonly awardIcon = LucideAward.icon;
   protected readonly checkIcon = LucideCheck.icon;
   protected readonly chevronDownIcon = LucideChevronDown.icon;
   protected readonly chevronUpIcon = LucideChevronUp.icon;
+  protected readonly orderIcon = LucideShoppingBag.icon;
+  protected readonly reviewIcon = LucideStar.icon;
+  protected readonly ticketIcon = LucideMessageSquare.icon;
 
   protected readonly customer = computed(() => findCustomer(this.id()));
 
@@ -488,6 +581,96 @@ export class CustomerDetailComponent {
       variant: LOYALTY_VARIANT[e.type],
       data: e,
     }));
+  });
+
+  protected readonly activityEntries = computed<TimelineEntry<ActivityData>[]>(() => {
+    const c = this.customer();
+    if (!c) return [];
+    const entries: TimelineEntry<ActivityData>[] = [];
+
+    // Orders: 1 entry per order placed + status events
+    c.orders.forEach((o) => {
+      entries.push({
+        id: `act-order-${o.id}`,
+        title: `Đặt đơn ${o.code}`,
+        description: `${o.lines.length} sản phẩm · ${o.total.toLocaleString('vi-VN')}₫ · ${
+          o.channel === 'pos' ? 'POS' : 'Online'
+        }`,
+        timestamp: o.placedAt,
+        icon: this.orderIcon,
+        variant: 'info',
+        data: { source: 'order', link: ['/orders', o.id] },
+      });
+      if (o.status === 'delivered' || o.status === 'cancelled' || o.status === 'refunded') {
+        entries.push({
+          id: `act-order-${o.id}-${o.status}`,
+          title: `Đơn ${o.code} — ${STATUS_LABEL[o.status]}`,
+          timestamp: o.placedAt,
+          icon: STATUS_ICON[o.status],
+          variant: STATUS_VARIANT[o.status],
+          data: { source: 'order', link: ['/orders', o.id] },
+        });
+      }
+    });
+
+    // Reviews
+    this.reviewStore.findByCustomer(c.id).forEach((r) => {
+      entries.push({
+        id: `act-review-${r.id}`,
+        title: `Gửi đánh giá ${r.rating}★ — ${r.productName}`,
+        description: r.title,
+        timestamp: r.submittedAt,
+        icon: this.reviewIcon,
+        variant: 'warning',
+        data: { source: 'review', link: ['/crm/reviews', r.id] },
+      });
+    });
+
+    // Tickets
+    this.ticketStore.findByCustomer(c.id).forEach((t) => {
+      entries.push({
+        id: `act-ticket-${t.id}`,
+        title: `Tạo yêu cầu ${t.code} — ${t.subject}`,
+        description: `${t.type} · ${t.status}`,
+        timestamp: t.createdAt,
+        icon: this.ticketIcon,
+        variant: 'danger',
+        data: { source: 'ticket', link: ['/crm/tickets', t.id] },
+      });
+    });
+
+    // Inquiries linked through matchedCustomerId
+    this.inquiryStore
+      .inquiries()
+      .filter((i) => i.matchedCustomerId === c.id)
+      .forEach((i) => {
+        entries.push({
+          id: `act-inquiry-${i.id}`,
+          title: `Gửi liên hệ ${i.code} — ${i.subject}`,
+          description: i.message.slice(0, 80) + (i.message.length > 80 ? '...' : ''),
+          timestamp: i.createdAt,
+          icon: this.ticketIcon,
+          variant: 'neutral',
+          data: { source: 'inquiry', link: ['/crm/inquiries', i.id] },
+        });
+      });
+
+    // Loyalty
+    c.loyaltyEvents.forEach((e) => {
+      entries.push({
+        id: `act-loyalty-${e.id}`,
+        title: e.description,
+        timestamp: e.occurredAt,
+        icon: LOYALTY_ICON[e.type],
+        variant: LOYALTY_VARIANT[e.type],
+        data: { source: 'loyalty', link: ['/customers', c.id] },
+      });
+    });
+
+    // Filter by source if set, then sort descending by timestamp
+    const filter = this.activitySource();
+    const filtered = filter ? entries.filter((e) => e.data?.source === filter) : entries;
+    return filtered.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
   });
 
   protected toggleOrder(orderId: string): void {
@@ -558,5 +741,12 @@ export class CustomerDetailComponent {
       other: 'Khác',
     };
     return map[g];
+  }
+
+  protected sourceBtn(active: boolean): string {
+    const base = 'rounded-full px-3 py-1 text-xs font-medium transition';
+    return active
+      ? `${base} bg-indigo-600 text-white`
+      : `${base} bg-slate-100 text-slate-700 hover:bg-slate-200`;
   }
 }
