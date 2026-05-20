@@ -28,7 +28,7 @@ File theo dõi tiến độ phát triển dashboard. Cập nhật mỗi khi hoà
 | Sprint 6  | Customer (CRM)                             | `[~]`      | `feat/customer-crm` |
 | Sprint 7  | Inventory                                  | `[~]`      | `feat/inventory`    |
 | Sprint 8  | Orders + Payments                          | `[x]`      | merged to `dev`     |
-| Sprint 9  | Marketing                                  | `[ ]`      |                     |
+| Sprint 9  | Marketing                                  | `[~]`      | `feat/marketing`    |
 | Sprint 10 | HR (Attendance, Incidents)                 | `[ ]`      |                     |
 | Sprint 11 | Audit log + Notifications                  | `[ ]`      |                     |
 | Sprint 12 | Polish (404/403, error boundary, i18n)     | `[ ]`      |                     |
@@ -77,7 +77,7 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 - [x] **Select** — single select dropdown, có search
 - [x] **MultiSelect** — multiple select với chip
 - [x] **Combobox/Autocomplete** — tìm theo SKU/phone/email
-- [ ] **DatePicker** — chọn ngày, calendar grid vi-VN
+- [x] **DatePicker** — chọn ngày, calendar grid vi-VN, min/max
 - [x] **DateRangePicker** — chọn khoảng ngày
 - [x] **FileUpload** — drag-drop single file với preview
 - [x] **ImageUploadGrid** — multi-image với reorder (CDK drag-drop), set primary
@@ -370,15 +370,34 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 
 ## Sprint 9 — Marketing
 
+### Mini-sprint plan
+
+- **9a** — Foundation: DatePicker + types/mock + stores.
+- **9b-1** — Campaigns: list / detail / form.
+- **9b-2** — Promotions: list / detail / form (5 rule types).
+- **9c** — Vouchers: list / detail / generator + post-create dialog.
+
 ### Components cần thêm (Sprint 9)
 
-- [ ] **DatePicker** (valid_from/valid_until)
+- [x] **DatePicker** (valid_from/valid_until) — single date popover, vi-VN, min/max, today shortcut (9a)
+
+### Mock data + stores (Sprint 9a)
+
+- [x] `marketing.types.ts` — ICampaign (5 status), IPromotion + 5-rule discriminated union, IVoucherBatch + IVoucherCode, meta maps
+- [x] `marketing.mock.ts` — 8 campaigns, 12 promotions covering all 5 rule types, 6 voucher batches (3 single + 3 multi) with ~1500 codes generated
+- [x] `CampaignStore` + `PromotionStore` + `VoucherStore` — countByStatus, lookup helpers, setStatus, upsert, addBatch
 
 ### Pages (Sprint 9)
 
-- [ ] `/marketing/campaigns` — list + form
-- [ ] `/marketing/promotions` — list + multi-type form
-- [ ] `/marketing/vouchers` — generator + usage tracking
+- [x] `/marketing/campaigns` — list 5-column với banner thumbnail + 3 filter (search/status/channel) (9b-1)
+- [x] `/marketing/campaigns/:id` — detail Tabs Info/Promotions/Vouchers + Pause/Activate actions (9b-1)
+- [x] `/marketing/campaigns/new` + `/:id/edit` — form với DatePicker × 2 + MultiSelect channels/tenants + banner Upload/URL toggle (9b-1)
+- [x] `/marketing/promotions` — list 5-column với type filter + sort/pagination (9b-2)
+- [x] `/marketing/promotions/:id` — detail rule card tailored per type + Pause/Activate (9b-2)
+- [x] `/marketing/promotions/new` + `/:id/edit` — 2-card form, @switch theo rule type (percent_order / fixed_order / percent_category / free_shipping / bogo) (9b-2)
+- [x] `/marketing/vouchers` — list 6-column với usage % và filter type/status (9c)
+- [x] `/marketing/vouchers/:id` — 2-col layout (config + usage gauge | codes table với search/filter + copy code) (9c)
+- [x] `/marketing/vouchers/new` — generator form sinh batch single_use hoặc multi_use, post-create dialog với Copy all + Tải CSV (9c)
 
 ---
 
@@ -438,3 +457,8 @@ Chỉ build khi sprint feature sắp dùng đến. Cập nhật khi hoàn thành
 | 2026-05-18 | Storybook | Backfill 14 story còn nợ: Combobox + DateRangePicker + DataTableVirtual (Sprint 8a); MultiSelect + Textarea + NumberInput + PriceInput + FileUpload + ImageUploadGrid + TreeSelect (Sprint 5); Drawer (Sprint 7); Stepper + Tree + Timeline + DescriptionList + PageHeader + PlaceholderPage (Sprint 4-6). Tổng 43 story. Build storybook pass.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | 2026-05-19 | Sprint 8  | Orders 8b: 2 page + 1 dialog. `/orders` list với 5 filter (search/channel/status/tenant/date-range qua DateRangePicker) + sort + pagination + 6 column DataTable; `/orders/:id` detail với Card header (status icon wrap, 2-3 action button theo state mapping), Tabs 3 panel (Items + footer summary subtotal/discount/shipping/total/refunded · Tiến trình Timeline với staff actor · Hoàn hàng list), sidebar 2 card (Khách hàng + shipping carrier/tracking · Thanh toán DescriptionList). RefundDialog line-item: checkbox + qty input bound max theo `qty - refundedQuantity`, select lý do, ghi chú, tổng tiền computed. Action 5 transition + cancel confirm + refund flow → addRefund auto chuyển partial/full refunded. Placeholder removed, routes wired. |
 | 2026-05-19 | Sprint 8  | Orders 8c: POS flow + Payments. `/orders/new` Stepper strict 3-step (Customer + walk-in checkbox + Combobox search · Cart Combobox add + qty stepper +/- + remove + subtotal · Payment method Select + discount PriceInput + ghi chú + summary card), submit tạo order channel='pos' status='completed' và payment 'paid' đồng thời rồi navigate detail. `/payments` list 6 column với 5 filter; `/payments/:id` detail method icon wrap + linked-order card. Store mở rộng: OrderStore.createOrder + nextOrderCode, PaymentStore.addPayment + nextPaymentCode + findByTenant. Sidebar bổ sung 'Thanh toán' (LucideCreditCard) trong group 'Bán hàng'. App routes thêm `/payments` lazy.                                                                             |
+| 2026-05-19 | Fix       | Checkbox click không toggle trong Storybook và `/orders/new` (walk-in). Nguyên nhân: input `sr-only` nested trong label `for/id` không re-dispatch click reliably. Fix: input overlay absolute inset-0 opacity-0 phủ kín visible box + bỏ `[for]` (implicit descendant association đã đủ). Thêm spec test (5/5 pass) làm regression guard. Cũng refactor walk-in trên `/orders/new` từ checkbox sang 2-button radio group cho UX rõ ràng hơn.                                                                                                                                                                                                                                                                                                                        |
+| 2026-05-19 | Sprint 9  | Marketing 9a foundation: DatePicker component (single date, vi-VN, min/max, today shortcut) + 4 stories. Marketing types + meta maps cho 3 entity (Campaign / Promotion / Voucher) với 5 promotion rule subtypes (percent_order / fixed_order / percent_category / free_shipping / bogo) và 2 voucher types (single_use / multi_use). Mock 8 campaigns + 12 promotions + 6 voucher batches với ~1500 codes generated deterministically. 3 stores với upsert / addBatch / setStatus / countByStatus.                                                                                                                                                                                                                                                                  |
+| 2026-05-19 | Sprint 9  | Marketing 9b-1 Campaigns: 5-column DataTable list (banner thumbnail + channel badges + 3 filter), detail Tabs Info/Promotions/Vouchers với Pause/Activate transition, form name + uppercase code + DatePicker × 2 + channels MultiSelect + tenant scope + banner Upload/URL toggle (URL preview live). CampaignStore.upsert(). Sidebar group Marketing tách 'Chiến dịch' (LucideMegaphone) + 'Khuyến mãi' (LucideClipboardList).                                                                                                                                                                                                                                                                                                                                     |
+| 2026-05-19 | Sprint 9  | Marketing 9b-2 Promotions: 5-column list (type + usage + 3 filter), detail rule card tailored per type (vd percent_category show category+brand names, BOGO show X/Y + trigger count), form 2-card với @switch theo rule type — percent_order (percent + minOrder + maxDiscount), fixed_order (amount + minOrder), percent_category (percent + maxDiscount + category/brand MultiSelect), free_shipping (minOrder threshold), bogo (buy/get NumberInput + trigger products MultiSelect). PromotionStore.upsert(). Placeholder removed.                                                                                                                                                                                                                               |
+| 2026-05-20 | Sprint 9  | Marketing 9c Vouchers: 6-column list (usage % + 3 filter), detail 2-col (config DescriptionList + usage progress bar bên trái · codes table sticky header với search/filter unused/used + click-to-copy + 'Copy all unused' bên phải, pagination 50/page), generator form với type select (drives suffix preview) + discount mode toggle (percent/fixed). On submit sinh codes deterministic, gọi addBatch, post-create dialog cho single_use show all codes + 'Copy tất cả' + 'Tải CSV'. Sidebar Marketing thêm 'Voucher' (LucideTicket).                                                                                                                                                                                                                           |
