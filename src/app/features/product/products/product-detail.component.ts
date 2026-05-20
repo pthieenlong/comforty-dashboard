@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideEdit, LucideImageOff, LucidePackage } from '@lucide/angular';
+import { LucideEdit, LucideImageOff, LucidePackage, LucideStar } from '@lucide/angular';
 import {
   BadgeComponent,
   BreadcrumbComponent,
@@ -15,6 +15,7 @@ import {
   TabsComponent,
   TagComponent,
 } from '@/shared/ui';
+import { ReviewStore } from '@/features/customer/review.store';
 import { findBrand } from '../brand.mock';
 import { getCategoryPath } from '../category.mock';
 import { findProduct } from '../product.mock';
@@ -249,6 +250,72 @@ const STATUS_VARIANT: Record<ProductStatus, 'success' | 'warning' | 'neutral'> =
               }
             </app-card>
           </ng-template>
+
+          <ng-template
+            appTabPanel="reviews"
+            [appTabPanelLabel]="'Đánh giá (' + approvedReviews().length + ')'"
+          >
+            <app-card padding="lg">
+              @if (approvedReviews().length === 0) {
+                <app-empty-state
+                  title="Chưa có đánh giá nào"
+                  description="Đánh giá đã duyệt cho sản phẩm sẽ hiển thị tại đây."
+                />
+              } @else {
+                <div class="mb-4 flex items-baseline gap-3">
+                  <p class="text-2xl font-bold text-slate-900">
+                    {{ avgRating().toFixed(1) }}
+                    <span class="text-base font-normal text-slate-500">/ 5</span>
+                  </p>
+                  <div class="flex items-center gap-1">
+                    @for (i of [1, 2, 3, 4, 5]; track i) {
+                      <app-icon
+                        [icon]="starIcon"
+                        size="sm"
+                        [class]="i <= avgRating() ? 'text-amber-500' : 'text-slate-200'"
+                      />
+                    }
+                  </div>
+                  <p class="text-sm text-slate-500">({{ approvedReviews().length }} đánh giá)</p>
+                </div>
+                <ul class="divide-y divide-slate-100">
+                  @for (r of approvedReviews(); track r.id) {
+                    <li class="py-4">
+                      <div class="flex items-start gap-3">
+                        <div class="flex items-center gap-0.5 shrink-0">
+                          @for (i of [1, 2, 3, 4, 5]; track i) {
+                            <app-icon
+                              [icon]="starIcon"
+                              size="xs"
+                              [class]="i <= r.rating ? 'text-amber-500' : 'text-slate-200'"
+                            />
+                          }
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <a
+                              [routerLink]="['/crm/reviews', r.id]"
+                              class="font-medium text-sm text-slate-900 hover:text-indigo-600"
+                            >
+                              {{ r.title }}
+                            </a>
+                            @if (r.verifiedPurchase) {
+                              <app-badge variant="success">Đã mua</app-badge>
+                            }
+                          </div>
+                          <p class="text-xs text-slate-500 mt-0.5">
+                            {{ r.customerName }} ·
+                            {{ r.submittedAt | date: 'dd/MM/yyyy' }}
+                          </p>
+                          <p class="mt-2 text-sm text-slate-700 line-clamp-3">{{ r.content }}</p>
+                        </div>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+            </app-card>
+          </ng-template>
         </app-tabs>
       </div>
     } @else {
@@ -264,6 +331,8 @@ const STATUS_VARIANT: Record<ProductStatus, 'success' | 'warning' | 'neutral'> =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetailComponent {
+  private readonly reviewStore = inject(ReviewStore);
+
   readonly id = input.required<string>();
 
   protected readonly activeTab = signal('overview');
@@ -271,6 +340,17 @@ export class ProductDetailComponent {
   protected readonly packageIcon = LucidePackage.icon;
   protected readonly editIcon = LucideEdit.icon;
   protected readonly imageOffIcon = LucideImageOff.icon;
+  protected readonly starIcon = LucideStar.icon;
+
+  protected readonly approvedReviews = computed(() =>
+    this.reviewStore.findByProduct(this.id()).filter((r) => r.status === 'approved'),
+  );
+
+  protected readonly avgRating = computed(() => {
+    const list = this.approvedReviews();
+    if (list.length === 0) return 0;
+    return list.reduce((sum, r) => sum + r.rating, 0) / list.length;
+  });
 
   protected thumbClasses(index: number): string {
     const base =
