@@ -18,4 +18,12 @@ export const CRM_ROUTES: Routes = [
     path: 'tickets/:id',
     loadComponent: () => import('./ticket-detail.component').then((m) => m.TicketDetailComponent),
   },
+  {
+    path: 'inquiries',
+    loadComponent: () => import('./inquiries-list.component').then((m) => m.InquiriesListComponent),
+  },
+  {
+    path: 'inquiries/:id',
+    loadComponent: () => import('./inquiry-detail.component').then((m) => m.InquiryDetailComponent),
+  },
 ];
