@@ -59,6 +59,10 @@ export const routes: Routes = [
           import('@/features/customer/customer.routes').then((m) => m.CUSTOMER_ROUTES),
       },
       {
+        path: 'crm',
+        loadChildren: () => import('@/features/customer/crm.routes').then((m) => m.CRM_ROUTES),
+      },
+      {
         path: 'catalog',
         loadChildren: () =>
           import('@/features/product/product.routes').then((m) => m.PRODUCT_ROUTES),

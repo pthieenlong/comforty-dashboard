@@ -12,6 +12,8 @@ import {
   LucidePackage,
   LucideShieldCheck,
   LucideShoppingCart,
+  LucideMessageSquare,
+  LucideStar,
   LucideStore,
   LucideTicket,
   LucideUserCog,
@@ -41,6 +43,13 @@ export const SIDEBAR_NAV: NavGroup[] = [
       { label: 'Đơn hàng', icon: LucideShoppingCart.icon, to: '/orders' },
       { label: 'Thanh toán', icon: LucideCreditCard.icon, to: '/payments' },
       { label: 'Khách hàng', icon: LucideUsers.icon, to: '/customers' },
+    ],
+  },
+  {
+    label: 'CRM',
+    items: [
+      { label: 'Đánh giá', icon: LucideStar.icon, to: '/crm/reviews' },
+      { label: 'Yêu cầu hỗ trợ', icon: LucideMessageSquare.icon, to: '/crm/tickets' },
     ],
   },
   {
