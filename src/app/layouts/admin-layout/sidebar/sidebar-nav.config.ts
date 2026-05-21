@@ -1,8 +1,10 @@
 import {
+  LucideTriangleAlert,
   LucideArchive,
   LucideBarChart3,
   LucideBoxes,
   LucideBuilding2,
+  LucideCalendarOff,
   LucideClipboardCheck,
   LucideClipboardList,
   LucideCreditCard,
@@ -81,7 +83,11 @@ export const SIDEBAR_NAV: NavGroup[] = [
   },
   {
     label: 'Nhân sự',
-    items: [{ label: 'Chấm công', icon: LucideUserCog.icon, to: '/hr/attendance' }],
+    items: [
+      { label: 'Chấm công', icon: LucideUserCog.icon, to: '/hr/attendance' },
+      { label: 'Đơn nghỉ phép', icon: LucideCalendarOff.icon, to: '/hr/leave-requests' },
+      { label: 'Sự cố', icon: LucideTriangleAlert.icon, to: '/hr/incidents' },
+    ],
   },
   {
     label: 'Hệ thống',
