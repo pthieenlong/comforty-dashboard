@@ -86,6 +86,13 @@ export const routes: Routes = [
         loadChildren: () => import('@/features/audit/audit.routes').then((m) => m.AUDIT_ROUTES),
       },
       {
+        path: 'notifications',
+        loadComponent: () =>
+          import('@/core/notification/notifications-list.component').then(
+            (m) => m.NotificationsListComponent,
+          ),
+      },
+      {
         path: 'reports',
         loadComponent: () =>
           import('@/features/dashboard/reports-placeholder.component').then(
