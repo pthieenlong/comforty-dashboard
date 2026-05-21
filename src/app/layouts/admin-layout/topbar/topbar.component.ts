@@ -1,17 +1,20 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
-  LucideAlertTriangle,
   LucideBell,
   LucideCheck,
   LucideChevronDown,
   LucideLogOut,
+  LucideMegaphone,
   LucideMenu,
+  LucideMessageSquare,
   LucidePackage,
   LucideSettings,
   LucideShoppingBag,
   LucideStore,
+  LucideTriangleAlert,
   LucideUser,
+  LucideUserCog,
   type LucideIconData,
 } from '@lucide/angular';
 import { AuthStore } from '@/core/auth/auth.store';
@@ -35,8 +38,11 @@ import {
 const NOTI_ICON_MAP: Record<NotificationType, LucideIconData> = {
   order: LucideShoppingBag.icon,
   stock: LucidePackage.icon,
-  system: LucideAlertTriangle.icon,
+  system: LucideTriangleAlert.icon,
   user: LucideUser.icon,
+  marketing: LucideMegaphone.icon,
+  hr: LucideUserCog.icon,
+  crm: LucideMessageSquare.icon,
 };
 
 @Component({
@@ -160,7 +166,12 @@ const NOTI_ICON_MAP: Record<NotificationType, LucideIconData> = {
           </ul>
 
           <div class="border-t border-slate-200 px-4 py-2 text-center">
-            <span class="text-xs text-slate-500">Hết thông báo gần đây</span>
+            <a
+              routerLink="/notifications"
+              class="text-xs font-medium text-indigo-600 hover:underline"
+            >
+              Xem tất cả thông báo →
+            </a>
           </div>
         </div>
       </app-dropdown>
