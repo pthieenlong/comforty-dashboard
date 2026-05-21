@@ -1,9 +1,10 @@
 import { type Routes } from '@angular/router';
+import { auditGuard } from '@/core/auth/audit.guard';
 
 export const AUDIT_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./audit-placeholder.component').then((m) => m.AuditPlaceholderComponent),
+    canActivate: [auditGuard],
+    loadComponent: () => import('./audit-list.component').then((m) => m.AuditListComponent),
   },
 ];
