@@ -123,6 +123,20 @@ export const ROLES: IRole[] = [
     isSystem: false,
   },
   {
+    id: 'role-cs-manager',
+    name: 'Customer Service Manager',
+    description: 'Quản lý team CSKH tại chi nhánh, duyệt yêu cầu hỗ trợ.',
+    permissionIds: ['customer:read', 'customer:update', 'order:read', 'user:read'],
+    isSystem: false,
+  },
+  {
+    id: 'role-cs-staff',
+    name: 'Customer Service Staff',
+    description: 'Nhân viên CSKH xử lý yêu cầu khách hàng.',
+    permissionIds: ['customer:read', 'order:read'],
+    isSystem: false,
+  },
+  {
     id: 'role-staff',
     name: 'Nhân viên',
     description: 'Vai trò mặc định cho nhân viên mới.',
@@ -193,6 +207,8 @@ function pickRole(idx: number): string {
     'role-inventory-clerk',
     'role-marketing',
     'role-auditor',
+    'role-cs-manager',
+    'role-cs-staff',
     'role-staff',
   ];
   if (idx === 0) return 'role-super-admin';
